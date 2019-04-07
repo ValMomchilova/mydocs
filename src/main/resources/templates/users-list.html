@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="~{fragments/navbar}"></th:block>
+    </header>
+    <main>
+        <div class="jumbotron bg-white mt-4">
+            <h1>All Other Users</h1>
+            <!--<hr/>-->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">User roles</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="user : ${users}">
+                    <tr>
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.rolesString}"></td>
+
+                        <td>
+                            <a th:href="@{/user/edit/{id}(id=${user.id})}"
+                               class="btn btn btn-outline-secondary font-weight-normal mb-3"
+                               th:if="${!user.admin}">Edit</a>
+                            <p th:if="${user.admin}" class="text-danger">Admin</p>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<th:block th:fragment>
+    <div class="md-background">
+        <th:block th:if="${principal!=null}">
+            test
+            <th:block th:text="${principal.name}"></th:block>
+        </th:block>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand text-white" th:href="@{/}">My Docs</a>
+            <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <th:block sec:authorize="isAnonymous()">
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" th:href="@{/register}">Register <span
+                                    class="sr-only">(current)</span></a>
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" th:href="@{/login}">Login <span
+                                    class="sr-only">(current)</span></a>
+                        </li>
+                        </li>
+                    </th:block>
+                    <th:block sec:authorize="isAuthenticated()">
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" th:href="@{/}">Home <span
+                                    class="sr-only">(current)</span></a>
+                        </li>
+                        <th:block sec:authorize="hasAuthority('ADMIN')">
+                            <li class="nav-item active">
+                                <a class="nav-link text-white" th:href="@{/users/show}">Users <span
+                                        class="sr-only">(current)</span></a>
+                            </li>
+                        </th:block>
+                        <form th:action="@{/logout}" th:method="post" class="mt-2">
+                            <span sec:authentication="name"></span>
+                            <button class="border-0 btn-link md-background p-0">Logout</button>
+                        </form>
+                    </th:block>
+                </ul>
+            </div>
+    </div>
+    </nav>
+</th:block>
