@@ -29,37 +29,43 @@
                     <label for="email">Email</label>
                     <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter email"
                            th:classappend="${email}? 'border-danger'">
-                    <div class="text-danger"
-                         th:each="error : ${#fields.errors('email')}"
-                         th:text="${error}">
-                    </div>
+                    <small id="eamilHelp" class="form-text text-muted">
+                        <div class="text-danger"
+                             th:each="error : ${#fields.errors('email')}"
+                             th:text="${error}">
+                        </div>
+                    </small>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" th:field="*{password}"
                            placeholder="Password"
                            th:classappend="${#fields.hasErrors('password')}? 'border-danger'">
-                    <div class="text-danger"
-                         th:each="error : ${#fields.errors('password')}"
-                         th:text="${error}">
-                    </div>
+                    <small id="passwordHelp" class="form-text text-muted">
+                        <div class="text-danger"
+                             th:each="error : ${#fields.errors('password')}"
+                             th:text="${error}">
+                        </div>
+                    </small>
                 </div>
                 <div class="form-group">
                     <label for="password">Confirm Password</label>
                     <input type="password" class="form-control" id="confirm-password" th:field="*{confirmPassword}"
                            placeholder="Confirm Password"
                            th:classappend="${#fields.hasErrors('confirmPassword')}? 'border-danger'">
-                    <div class="text-danger"
-                         th:each="error : ${#fields.errors('confirmPassword')}"
-                         th:text="${error}">
-                    </div>
-                    <th:block th:if="${globalErrors!=null}">
-                        <th:block th:each="e : ${globalErrors}">
-                            <div class="text-danger"
-                                 th:text="${e}">
-                            </div>
+                    <small id="passwordConfHelp" class="form-text text-muted">
+                        <div class="text-danger"
+                             th:each="error : ${#fields.errors('confirmPassword')}"
+                             th:text="${error}">
+                        </div>
+                        <th:block th:if="${globalErrors!=null}">
+                            <th:block th:each="e : ${globalErrors}">
+                                <div class="text-danger"
+                                     th:text="${e}">
+                                </div>
+                            </th:block>
                         </th:block>
-                    </th:block>
+                    </small>
                 </div>
 
                 <button id="btnSubmit" type="submit" class="btn btn-primary md-background">Register</button>

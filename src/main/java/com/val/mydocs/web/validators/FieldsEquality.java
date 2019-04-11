@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = { FieldsEqualityValidator.class })
 public @interface FieldsEquality {
 
-    String message() default "Password and confirm password must match";
+    String message() default "{user.match.password}";
 
     Class<?>[] groups() default {};
 
@@ -36,7 +36,7 @@ public @interface FieldsEquality {
 
     @Target({ TYPE, ANNOTATION_TYPE })
     @Retention(RUNTIME)
-    public @interface List {
+    @interface List {
         FieldsEquality[] value();
     }
 }
