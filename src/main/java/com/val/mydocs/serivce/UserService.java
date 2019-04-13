@@ -19,4 +19,6 @@ public interface UserService extends UserDetailsService {
     boolean saveRoles(UserServiceModel userServiceModel);
 
     boolean isAdmin(String id);
+
+    String getUserLangByName(String username);
 }

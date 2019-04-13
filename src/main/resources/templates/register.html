@@ -54,7 +54,7 @@
                            placeholder="Confirm Password"
                            th:classappend="${#fields.hasErrors('confirmPassword')}? 'border-danger'">
                     <small id="passwordConfHelp" class="form-text text-muted">
-                        <div class="text-danger"
+                        <div class="text-daform-controlnger"
                              th:each="error : ${#fields.errors('confirmPassword')}"
                              th:text="${error}">
                         </div>
@@ -67,11 +67,19 @@
                         </th:block>
                     </small>
                 </div>
+                <div class="form-group">
+                    <label for="inputLang">Preferred language</label>
+                    <select class="form-control selectpicker" data-width="fit" th:field="*{lang}" id="inputLang">
+                        <option value="en">English</option>
+                        <option value="bg">Български</option>
+                    </select>
+                </div>
 
                 <button id="btnSubmit" type="submit" class="btn btn-primary md-background">Register</button>
             </form>
         </div>
     </main>
 </div>
+
 </body>
 </html>

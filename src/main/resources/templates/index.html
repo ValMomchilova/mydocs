@@ -5,20 +5,20 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-   <th:block th:include="~{fragments/head}"></th:block>
+    <th:block th:include="~{fragments/head}"></th:block>
 </head>
 <body>
-    <div class="container-fluid">
-        <header>
-            <th:block th:include="~{fragments/navbar}"></th:block>
-        </header>
-        <main>
-            <div class="jumbotron md-background mt-4">
-                <h1>My Docs</h1>
-                <hr/>
-                <p>My Docs is a document expiry tracking system</p>
-            </div>
-        </main>
-    </div>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="~{fragments/navbar}"></th:block>
+    </header>
+    <main>
+        <div class="jumbotron md-background mt-4">
+            <h1>My Docs</h1>
+            <hr/>
+            <p th:text="#{home.description}"></p>
+        </div>
+    </main>
+</div>
 </body>
 </html>

@@ -14,7 +14,7 @@ public class UserBindingModel {
     private String password;
     private String confirmPassword;
     private String email;
-
+    private String lang;
     private boolean isAdmin;
 
     public UserBindingModel() {
@@ -69,5 +69,21 @@ public class UserBindingModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }

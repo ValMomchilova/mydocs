@@ -84,7 +84,7 @@ public class UserController extends BaseController{
                                     BindingResult bindingResult, ModelAndView modelAndView) {
         if (bindingResult.hasErrors()) {
             this.addUserModels(modelAndView);
-            return this.view("add-virus", modelAndView);
+            return this.view("edit-user", modelAndView);
         }
 
         boolean isOldAdminRole = this.userService.isAdmin(id);

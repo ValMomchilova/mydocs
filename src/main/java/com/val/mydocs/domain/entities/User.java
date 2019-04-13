@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ public class User implements UserDetails {
     private String password;
     private String email;
     private Set<UserRole> roles;
+    private String lang;
 
     @Id
     @GeneratedValue(generator = "uuid-string")
@@ -69,15 +71,20 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    @Column(name="lang", length = 5)
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
     @Override
     @Transient
     public Collection<UserRole> getAuthorities() {
         return this.roles;
     }
-
-//    public void setAuthorities(Set<UserRole> roles){
-//        this.setRoles(roles);
-//    }
 
     @Override
     @Transient

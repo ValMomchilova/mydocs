@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -106,6 +107,15 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    @Override
+    public String getUserLangByName(String username) {
+        User user = this.userRepository.findUserByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("Username not found."));
+
+        String lang = user.getLang();
+        return lang;
     }
 
 
