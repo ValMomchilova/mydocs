@@ -34,14 +34,52 @@
                             </li>
                         </th:block>
                         <li class="nav-item active">
-                        <form th:action="@{/logout}" th:method="post" class="mt-2">
-                            <span class="md-dark-text" sec:authentication="name"></span>
-                            <button class="border-0 btn-link md-background p-0">Logout</button>
-                        </form>
+                            <form th:action="@{/logout}" th:method="post" class="mt-2">
+                                <span class="md-dark-text" sec:authentication="name"></span>
+                                <button class="border-0 btn-link md-background p-0">Logout</button>
+                            </form>
                         </li>
                     </th:block>
+                    <li class="nav-item active mt-2 navPadding">
+                        <form th:object="${locale}">
+                        <span th:utext="#{lang.change}" ></span>:
+                        <select class="rounded" id="locales" th:field="*{language}">
+                            <option th:value="'en'" th:text="#{lang.eng}"></option>
+                            <option th:value="'bg'" th:text="#{lang.bg}"></option>
+                        </select>
+                        </form>
+                    </li>
+                    <p th:text="${lang}"></p>
                 </ul>
             </div>
     </div>
     </nav>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#locales").change(function () {
+                var selectedOption = $('#locales').val();
+                if (selectedOption != '') {
+                    // window.location.replace(window.location + '?lang=' + selectedOption);
+                    var paramName = "lang"
+                    var url = window.location.href;
+                    if (url.indexOf(paramName + "=") < 0) {
+                        if (url.indexOf('?') > -1) {
+                            url += '&' + paramName + '=' + selectedOption;
+                        } else {
+                            url += '?' + paramName + '=' + selectedOption;
+                        }
+                    }
+                    else{
+                        var prefix = url.substring(0, url.indexOf(paramName));
+                        var suffix = url.substring(url.indexOf(paramName));
+                        suffix = suffix.substring(suffix.indexOf("=") + 1);
+                        suffix = (suffix.indexOf("&") >= 0) ? suffix.substring(suffix.indexOf("&")) : "";
+                        url = prefix + paramName + "=" + selectedOption + suffix;
+                    }
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
 </th:block>

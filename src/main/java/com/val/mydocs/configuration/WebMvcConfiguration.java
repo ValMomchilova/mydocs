@@ -1,6 +1,6 @@
 package com.val.mydocs.configuration;
 
-import com.val.mydocs.web.interseptors.CustomizeTitleInterceptor;
+import com.val.mydocs.web.interseptors.AddLocalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +13,11 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
-    private final CustomizeTitleInterceptor customizeTitleInterceptor;
+    private final AddLocalInterceptor addLocalInterceptor;
 
     @Autowired
-    public WebMvcConfiguration(CustomizeTitleInterceptor customizeTitleInterceptor) {
-        this.customizeTitleInterceptor = customizeTitleInterceptor;
+    public WebMvcConfiguration(AddLocalInterceptor addLocalInterceptor) {
+        this.addLocalInterceptor = addLocalInterceptor;
     }
 
     @Bean
@@ -39,7 +39,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
-        registry.addInterceptor(this.customizeTitleInterceptor);
+        registry.addInterceptor(this.addLocalInterceptor);
     }
 
     @Bean

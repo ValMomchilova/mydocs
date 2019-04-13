@@ -30,19 +30,19 @@ public class HomeController extends BaseController {
                               RedirectAttributes redirectAttributes,
                               HttpServletRequest request) {
         if (principal != null) {
-            String userName = principal.getName();
-            String lang = null;
-            if (userName != null) {
-                lang = this.userService.getUserLangByName(userName);
-                if (lang != null && !lang.isEmpty()) {
-                    String defaultLang = Locale.US.getLanguage();
-                    String attribute = "lang";
-                    if (!lang.equals(defaultLang) && request.getParameter("lang") == null) {
-                        redirectAttributes.addAttribute(attribute, lang);
-                        return this.redirect("/");
-                    }
-                }
-            }
+//            String userName = principal.getName();
+//            String lang = null;
+//            if (userName != null) {
+//                lang = this.userService.getUserLangByName(userName);
+//                if (lang != null && !lang.isEmpty()) {
+//                    String defaultLang = Locale.US.getLanguage();
+//                    String attribute = "lang";
+//                    if (!lang.equals(defaultLang) && request.getParameter("lang") == null) {
+//                        redirectAttributes.addAttribute(attribute, lang);
+//                        return this.redirect("/");
+//                    }
+//                }
+//            }
         }
         return this.view("index");
     }
