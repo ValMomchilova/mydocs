@@ -1,6 +1,15 @@
 .md-background{
-    background-color: #35b7a4;
+    background-color: #52b7b5;
     color: white;
+}
+
+.md-background-light{
+    background-color: #c9f2f0;
+    color: #035e4f;
+}
+
+.md-background-m-img{
+    background-image: url("../images/main-home.png");
 }
 
 .md-dark-text{

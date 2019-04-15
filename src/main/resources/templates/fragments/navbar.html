@@ -1,9 +1,5 @@
 <th:block th:fragment>
     <div class="md-background">
-        <th:block th:if="${principal!=null}">
-            test
-            <th:block th:text="${principal.name}"></th:block>
-        </th:block>
         <nav class="navbar navbar-expand-lg navbar-dark">
             <a class="navbar-brand text-white" th:href="@{/}">My Docs</a>
             <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -27,29 +23,55 @@
                             <a class="nav-link text-white" th:href="@{/}">Home <span
                                     class="sr-only">(current)</span></a>
                         </li>
+
+                        <th:block sec:authorize="hasAuthority('ADMIN') OR hasAuthority('MODERATOR')">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" name="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Categories
+                            </a>
+                            <div class="dropdown-menu md-background" aria-labelledby="navbarDropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Subject types</a>
+                                <ul class="dropdown-menu md-background">
+                                    <li class="nav-item active">
+                                        <a class="nav-link text-white active" th:href="@{/subject-types/add}">Add</a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link text-white active" th:href="@{/subject-types/list}">List</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        </th:block>
+
+
                         <th:block sec:authorize="hasAuthority('ADMIN')">
                             <li class="nav-item active">
                                 <a class="nav-link text-white" th:href="@{/users/show}">Users <span
                                         class="sr-only">(current)</span></a>
                             </li>
                         </th:block>
-                        <li class="nav-item active">
-                            <form th:action="@{/logout}" th:method="post" class="mt-2">
-                                <span class="md-dark-text" sec:authentication="name"></span>
-                                <button class="border-0 btn-link md-background p-0">Logout</button>
+                    </th:block>
+                </ul>
+
+                <ul class="text-right list-inline">
+                    <th:block sec:authorize="isAuthenticated()">
+                        <li class="list-inline-item">
+                            <form th:action="@{/logout}" th:method="post" class="form-inline my-2 my-lg-0">
+                                <span class="md-dark-text font-weight-bold" sec:authentication="name"></span>
+                                <button class="border-0 nav-link md-background">Logout</button>
                             </form>
                         </li>
                     </th:block>
-                    <li class="nav-item active mt-2 navPadding">
-                        <form th:object="${locale}">
-                        <span th:utext="#{lang.change}" ></span>:
-                        <select class="rounded" id="locales" th:field="*{language}">
-                            <option th:value="'en'" th:text="#{lang.eng}"></option>
-                            <option th:value="'bg'" th:text="#{lang.bg}"></option>
-                        </select>
+                    <li class="list-inline-item">
+                        <form th:object="${locale}" class="form-inline my-2 my-lg-0">
+                            <span class="pr-1" th:utext="#{lang.change}"></span>
+                            <select class="rounded" id="locales" th:field="*{language}">
+                                <option th:value="'en'" th:text="#{lang.eng}"></option>
+                                <option th:value="'bg'" th:text="#{lang.bg}"></option>
+                            </select>
                         </form>
                     </li>
-                    <p th:text="${lang}"></p>
                 </ul>
             </div>
     </div>
@@ -70,7 +92,7 @@
                             url += '?' + paramName + '=' + selectedOption;
                         }
                     }
-                    else{
+                    else {
                         var prefix = url.substring(0, url.indexOf(paramName));
                         var suffix = url.substring(url.indexOf(paramName));
                         suffix = suffix.substring(suffix.indexOf("=") + 1);

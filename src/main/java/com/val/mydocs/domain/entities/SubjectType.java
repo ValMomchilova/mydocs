@@ -9,6 +9,7 @@ import javax.persistence.Table;
 public class SubjectType extends BaseEntity {
     private String title;
     private String description;
+    private String imageUrl;
 
     public SubjectType() {
     }
@@ -29,5 +30,14 @@ public class SubjectType extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "image_url")
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

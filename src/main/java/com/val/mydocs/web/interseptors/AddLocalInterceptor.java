@@ -20,6 +20,8 @@ public class AddLocalInterceptor extends HandlerInterceptorAdapter {
                            ModelAndView modelAndView) throws Exception {
 
             Locale locale = RequestContextUtils.getLocale(request);
-            modelAndView.addObject("locale", locale);
+            if (locale != null && modelAndView != null) {
+                modelAndView.addObject("locale", locale);
+            }
     }
 }

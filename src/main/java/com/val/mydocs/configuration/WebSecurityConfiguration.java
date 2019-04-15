@@ -20,7 +20,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .and()
                .authorizeRequests()
                .antMatchers("/login", "/register").anonymous()
-               .antMatchers("/", "/js/**", "/css/**", "/icons/**").permitAll()
+               .antMatchers("/", "/js/**", "/css/**", "/images/**").permitAll()
                .antMatchers("/users/**").hasAuthority("ADMIN")
                .anyRequest().authenticated()
        .and()

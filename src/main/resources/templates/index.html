@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <th:block th:include="~{fragments/head}"></th:block>
 </head>
-<body>
+<body class="md-background-m-img">
 <div class="container-fluid">
     <header>
         <th:block th:include="~{fragments/navbar}"></th:block>
@@ -19,6 +19,10 @@
             <p th:text="#{home.description}"></p>
         </div>
     </main>
+    <footer>
+        <th:block th:include="~{fragments/footer}"></th:block>
+    </footer>
+</body>
 </div>
 </body>
 </html>
