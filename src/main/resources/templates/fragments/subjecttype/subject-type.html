@@ -1,0 +1,36 @@
+<th:block th:fragment>
+<div class="form-group">
+    <label for="add-subject-type-title" class="font-weight-bold">Title</label>
+    <input type="text" class="form-control text-center" id="add-subject-type-title" th:field="*{title}"
+           th:classappend="${#fields.hasErrors('title')}? 'border-danger'">
+    <small id="titileHelp" class="form-text text-muted">
+        <div class="text-danger"
+             th:each="error : ${#fields.errors('title')}"
+             th:text="${error}">
+        </div>
+    </small>
+</div>
+<div class="form-group">
+    <label for="add-subject-type-description" class="font-weight-bold">Description</label>
+    <textarea id="add-subject-type-description" cols="41" rows="5" th:field="*{description}"
+              th:classappend="${#fields.hasErrors('description')}? 'border-danger'">
+            </textarea>
+    <small id="descriptionHelp" class="form-text text-muted">
+        <div class="text-danger"
+             th:each="error : ${#fields.errors('description')}"
+             th:text="${error}">
+        </div>
+    </small>
+</div>
+<div class="form-group">
+    <label for="add-subject-type-image" class="font-weight-bold">Image</label>
+    <input type="file" class="form-control-file" id="add-subject-type-image" name="image"th:field="*{image}"
+           th:classappend="${#fields.hasErrors('image')}? 'border-danger'">
+    <small id="imageUrlHelp" class="form-text text-muted">
+        <div class="text-danger"
+             th:each="error : ${#fields.errors('image')}"
+             th:text="${error}">
+        </div>
+    </small>
+</div>
+</th:block>

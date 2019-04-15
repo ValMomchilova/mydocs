@@ -9,6 +9,7 @@ import com.val.mydocs.serivce.UserRoleService;
 import com.val.mydocs.serivce.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +62,7 @@ public class UserController extends BaseController{
         return this.redirect("/login");
     }
 
+    //@PreAuthorize(value = "hasRole('ADMIN')")
     @GetMapping("/users/show")
     public ModelAndView showUsers(ModelAndView modelAndView, Principal principal){
         List<UsersListViewModel> users = this.userService.findAllUsersNotUsername(principal.getName())

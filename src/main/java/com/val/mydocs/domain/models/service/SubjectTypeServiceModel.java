@@ -1,20 +1,22 @@
-package com.val.mydocs.domain.entities;
+package com.val.mydocs.domain.models.service;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "subject_types")
-public class SubjectType extends BaseEntity {
+public class SubjectTypeServiceModel {
+    private String id;
     private String title;
     private String description;
     private String imageUrl;
 
-    public SubjectType() {
+    public SubjectTypeServiceModel() {
     }
 
-    @Column(name = "title", nullable = false, unique = true, length = 30)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -23,7 +25,6 @@ public class SubjectType extends BaseEntity {
         this.title = title;
     }
 
-    @Column(name = "description", columnDefinition = "TEXT")
     public String getDescription() {
         return description;
     }
@@ -32,7 +33,6 @@ public class SubjectType extends BaseEntity {
         this.description = description;
     }
 
-    @Column(name = "image_url")
     public String getImageUrl() {
         return imageUrl;
     }
