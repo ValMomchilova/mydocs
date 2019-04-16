@@ -12,7 +12,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,21 +54,21 @@ public class SubjectTypeController extends BaseController {
                                               BindingResult bindingResult,
                                               ModelAndView modelAndView,
                                               HttpServletRequest request) {
+        String view = "subjecttype/add-subject-type";
         if (bindingResult.hasErrors()) {
-            return this.view("subjecttype/add-subject-type", modelAndView);
+            modelAndView.addObject("model", model);
+            return this.view(view, modelAndView);
+        }
+
+        String imageUrl = uploadImage(model, bindingResult, request);
+        if (bindingResult.hasErrors()) {
+            return this.view(view, modelAndView);
         }
 
         SubjectTypeServiceModel subjectTypeServiceModel = this.modelMapper.map(model, SubjectTypeServiceModel.class);
-        String imageUrl = null;
-        try {
-            imageUrl = this.cloudinaryService.uploadImage(model.getImage());
-        } catch (IOException e) {
-            bindingResult.addError(new FieldError("model", "image",
-                    this.messageSource.getMessage("error.image.upload", null, RequestContextUtils.getLocale(request))));
-        }
         subjectTypeServiceModel.setImageUrl(imageUrl);
 
-        this.subjectTypeService.saveSubjectType(subjectTypeServiceModel);
+        this.subjectTypeService.addSubjectType(subjectTypeServiceModel);
 
         return this.redirect("/subject-types/all");
     }
@@ -90,9 +88,81 @@ public class SubjectTypeController extends BaseController {
     @GetMapping("/subject-types/details/{id}")
     public ModelAndView detailsSubjectTypes(@PathVariable String id, ModelAndView modelAndView) {
         SubjectTypeServiceModel subjectTypeServiceModel = this.subjectTypeService.findSubjectTypesById(id);
-        modelAndView.addObject("subjectType",
+        modelAndView.addObject("model",
                 this.modelMapper.map(subjectTypeServiceModel, SubjectTypesDetailsViewModel.class));
 
-        return super.view("subjecttype/details", modelAndView);
+        return super.view("subjecttype/subject-type-details", modelAndView);
     }
+
+    @GetMapping("/subject-types/edit/{id}")
+    public ModelAndView editSubjectTypes(@PathVariable String id,
+                                    @ModelAttribute(name = "model") SubjectTypeBindingModel model,
+                                    ModelAndView modelAndView) {
+        SubjectTypeServiceModel subjectTypeServiceModel = this.subjectTypeService.findSubjectTypesById(id);
+        model = this.modelMapper.map(subjectTypeServiceModel, SubjectTypeBindingModel.class);
+
+        modelAndView.addObject("model", model);
+
+        return super.view("subjecttype/edit-subject-type", modelAndView);
+    }
+
+    @PostMapping("/subject-types/edit/{id}")
+    public ModelAndView editSubjectTypesConfirm(@PathVariable(name = "id") String id,
+                                           @Valid @ModelAttribute(name = "model") SubjectTypeBindingModel model,
+                                           BindingResult bindingResult,
+                                           ModelAndView modelAndView,
+                                           HttpServletRequest request) {
+        String view = "subjecttype/edit-subject-type";
+        if (bindingResult.hasErrors()) {
+            modelAndView.addObject("model", model);
+            return this.view(view, modelAndView);
+        }
+
+        SubjectTypeServiceModel subjectTypeServiceModel = this.modelMapper.map(model, SubjectTypeServiceModel.class);
+
+        if (model.getImage() != null && !model.getImage().getOriginalFilename().isEmpty()) {
+            String imageUrl = this.uploadImage(model, bindingResult, request);
+            if (bindingResult.hasErrors()) {
+                modelAndView.addObject("model", model);
+                return this.view(view, modelAndView);
+            }
+            subjectTypeServiceModel.setImageUrl(imageUrl);
+        }
+
+        this.subjectTypeService.editSubjectType(subjectTypeServiceModel);
+
+        return super.redirect("/subject-types/details/" + id);
+    }
+
+    @GetMapping("subject-types/delete/{id}")
+    public ModelAndView deleteSubjectType(@PathVariable String id,
+                                    @ModelAttribute(name = "subjectType") SubjectTypeBindingModel subjectType,
+                                    ModelAndView modelAndView) {
+        SubjectTypeServiceModel subjectTypeServiceModel = this.subjectTypeService.findSubjectTypesById(id);
+        subjectType = this.modelMapper.map(subjectTypeServiceModel, SubjectTypeBindingModel.class);
+
+        modelAndView.addObject("model", subjectType);
+
+        return super.view("subjecttype/delete-subject-type", modelAndView);
+    }
+
+    @PostMapping("subject-types/delete/{id}")
+    public ModelAndView deleteSubjectTypeConfirm(@PathVariable String id) {
+        this.subjectTypeService.deleteSubjectType(id);
+
+        return super.redirect("/subject-types/all");
+    }
+
+    private String uploadImage(SubjectTypeBindingModel model, BindingResult bindingResult, HttpServletRequest request) {
+        String imageUrl = null;
+        try {
+            imageUrl = this.cloudinaryService.uploadImage(model.getImage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            bindingResult.addError(new FieldError("model", "image",
+                    this.messageSource.getMessage("error.image.upload", null, RequestContextUtils.getLocale(request))));
+        }
+        return imageUrl;
+    }
+
 }

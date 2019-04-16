@@ -22,10 +22,23 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
     }
 
     @Override
-    public SubjectTypeServiceModel saveSubjectType(SubjectTypeServiceModel subjectTypeServiceModel) {
+    public SubjectTypeServiceModel addSubjectType(SubjectTypeServiceModel subjectTypeServiceModel) {
         SubjectType subjectType = this.modelMapper.map(subjectTypeServiceModel, SubjectType.class);
-        SubjectType subjectSaved = this.subjectTypeRepository.save(subjectType);
+        SubjectType subjectSaved = saveSubjectType(subjectType);
         return this.modelMapper.map(subjectSaved, SubjectTypeServiceModel.class);
+    }
+
+    @Override
+    public SubjectTypeServiceModel editSubjectType(SubjectTypeServiceModel subjectTypeServiceModel) {
+        SubjectType subjectType = this.modelMapper.map(subjectTypeServiceModel, SubjectType.class);
+        SubjectType subjectSaved = saveSubjectType(subjectType);
+        return this.modelMapper.map(subjectSaved, SubjectTypeServiceModel.class);
+    }
+
+    @Override
+    public void deleteSubjectType(String id) {
+        //throws EmptyResultDataAccessException
+       this.subjectTypeRepository.deleteById(id);
     }
 
     @Override
@@ -43,5 +56,9 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
             return null;
         }
         return this.modelMapper.map(subjectType, SubjectTypeServiceModel.class);
+    }
+
+    private SubjectType saveSubjectType(SubjectType subjectType) {
+        return this.subjectTypeRepository.save(subjectType);
     }
 }

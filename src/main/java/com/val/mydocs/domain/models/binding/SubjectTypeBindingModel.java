@@ -11,6 +11,7 @@ public class SubjectTypeBindingModel {
     private String title;
     private String description;
     private MultipartFile image;
+    private String imageUrl;
 
     public SubjectTypeBindingModel() {
     }
@@ -48,5 +49,13 @@ public class SubjectTypeBindingModel {
 
     public void setImage(MultipartFile image) {
         this.image = image;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

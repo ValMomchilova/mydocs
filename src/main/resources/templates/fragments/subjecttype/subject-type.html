@@ -26,7 +26,7 @@
     <label for="add-subject-type-image" class="font-weight-bold">Image</label>
     <input type="file" class="form-control-file" id="add-subject-type-image" name="image"th:field="*{image}"
            th:classappend="${#fields.hasErrors('image')}? 'border-danger'">
-    <small id="imageUrlHelp" class="form-text text-muted">
+    <small id="imageHelp" class="form-text text-muted">
         <div class="text-danger"
              th:each="error : ${#fields.errors('image')}"
              th:text="${error}">
