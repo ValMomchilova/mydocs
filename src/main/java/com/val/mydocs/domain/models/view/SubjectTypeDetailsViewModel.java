@@ -1,13 +1,13 @@
 package com.val.mydocs.domain.models.view;
 
-public class SubjectTypesDetailsViewModel {
+public class SubjectTypeDetailsViewModel {
     private String id;
     private String title;
     private String description;
     private String imageUrl;
 
 
-    public SubjectTypesDetailsViewModel() {
+    public SubjectTypeDetailsViewModel() {
     }
 
     public String getId() {

@@ -24,26 +24,30 @@
                                     class="sr-only">(current)</span></a>
                         </li>
 
-                        <th:block sec:authorize="hasAuthority('ADMIN') OR hasAuthority('MODERATOR')">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" name="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Categories
-                            </a>
-                            <div class="dropdown-menu md-background" aria-labelledby="navbarDropdown">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Subject types</a>
-                                <ul class="dropdown-menu md-background">
-                                    <li class="nav-item active">
-                                        <a class="nav-link text-white active" th:href="@{/subject-types/add}">Add</a>
-                                    </li>
-                                    <li class="nav-item active">
-                                        <a class="nav-link text-white active" th:href="@{/subject-types/all}">All</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                        <th:block sec:authorize="hasAuthority('MODERATOR')">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
+                                   name="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Subject types
+                                </a>
+                                <div class="dropdown-menu md-background" aria-labelledby="navbarDropdown">
+                                    <a class="nav-link text-white" th:href="@{/subject-types/add}">Add</a>
+                                    <a class="nav-link text-white" th:href="@{/subject-types/all}">All</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
+                                   name="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Document types
+                                </a>
+                                <div class="dropdown-menu md-background" aria-labelledby="navbarDropdown">
+                                    <a class="nav-link text-white" th:href="@{/document-types/add}">Add</a>
+                                    <a class="nav-link text-white" th:href="@{/document-types/all}">All</a>
+                                </div>
+                            </li>
                         </th:block>
-
 
                         <th:block sec:authorize="hasAuthority('ADMIN')">
                             <li class="nav-item active">

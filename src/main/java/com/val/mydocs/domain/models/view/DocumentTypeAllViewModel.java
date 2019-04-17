@@ -1,11 +1,10 @@
 package com.val.mydocs.domain.models.view;
 
-public class SubjectTypesAllViewModel {
-    private String title;
-    private String imageUrl;
+public class DocumentTypeAllViewModel {
     private String id;
+    private String title;
 
-    public SubjectTypesAllViewModel() {
+    public DocumentTypeAllViewModel() {
     }
 
     public String getId() {
@@ -22,13 +21,5 @@ public class SubjectTypesAllViewModel {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }

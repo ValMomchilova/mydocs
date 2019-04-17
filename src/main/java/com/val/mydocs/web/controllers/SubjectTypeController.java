@@ -2,8 +2,8 @@ package com.val.mydocs.web.controllers;
 
 import com.val.mydocs.domain.models.binding.SubjectTypeBindingModel;
 import com.val.mydocs.domain.models.service.SubjectTypeServiceModel;
-import com.val.mydocs.domain.models.view.SubjectTypesAllViewModel;
-import com.val.mydocs.domain.models.view.SubjectTypesDetailsViewModel;
+import com.val.mydocs.domain.models.view.SubjectTypeAllViewModel;
+import com.val.mydocs.domain.models.view.SubjectTypeDetailsViewModel;
 import com.val.mydocs.serivce.CloudinaryService;
 import com.val.mydocs.serivce.SubjectTypeService;
 import org.modelmapper.ModelMapper;
@@ -76,9 +76,9 @@ public class SubjectTypeController extends BaseController {
     @GetMapping("/subject-types/all")
     public ModelAndView allSubjectTypes(ModelAndView modelAndView) {
         List<SubjectTypeServiceModel> serviceModels = this.subjectTypeService.findAllSubjectTypes();
-        List<SubjectTypesAllViewModel> serviceViewModels = serviceModels
+        List<SubjectTypeAllViewModel> serviceViewModels = serviceModels
                 .stream()
-                .map(o -> this.modelMapper.map(o, SubjectTypesAllViewModel.class))
+                .map(o -> this.modelMapper.map(o, SubjectTypeAllViewModel.class))
                 .collect(Collectors.toList());
         modelAndView.addObject("subjectTypes", serviceViewModels);
 
@@ -89,7 +89,7 @@ public class SubjectTypeController extends BaseController {
     public ModelAndView detailsSubjectTypes(@PathVariable String id, ModelAndView modelAndView) {
         SubjectTypeServiceModel subjectTypeServiceModel = this.subjectTypeService.findSubjectTypesById(id);
         modelAndView.addObject("model",
-                this.modelMapper.map(subjectTypeServiceModel, SubjectTypesDetailsViewModel.class));
+                this.modelMapper.map(subjectTypeServiceModel, SubjectTypeDetailsViewModel.class));
 
         return super.view("subjecttype/subject-type-details", modelAndView);
     }
