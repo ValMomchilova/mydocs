@@ -1,53 +1,47 @@
-package com.val.mydocs.domain.entities;
+package com.val.mydocs.domain.models.service;
 
-import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@Entity
-@Table(name = "documents")
-public class Document extends BaseEntity {
-    private Subject subject;
-    private DocumentType documentType;
+public class DocumentServiceModel {
+    private String id;
+    private SubjectServiceModel subject;
+    private DocumentTypeServiceModel documentType;
     private String title;
     private LocalDate date;
     private LocalDate expiredDate;
     private LocalTime expiredTime;
     private String description;
     private LocalDate renewDate;
-    private User user;
+    private UserServiceModel user;
 
-    public Document() {
+    public DocumentServiceModel() {
     }
 
-    @ManyToOne(targetEntity = Subject.class)
-    @JoinColumn(
-            name = "subject_id",
-            referencedColumnName = "id"
-    )
-    public Subject getSubject() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public SubjectServiceModel getSubject() {
         return subject;
     }
 
-    public void setSubject(Subject subject) {
+    public void setSubject(SubjectServiceModel subject) {
         this.subject = subject;
     }
 
-    @ManyToOne(targetEntity = DocumentType.class)
-    @JoinColumn(
-            name = "document_type_id",
-            referencedColumnName = "id"
-    )
-    public DocumentType getDocumentType() {
+    public DocumentTypeServiceModel getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(DocumentType documentType) {
+    public void setDocumentType(DocumentTypeServiceModel documentType) {
         this.documentType = documentType;
     }
 
-    @Column(name = "title")
     public String getTitle() {
         return title;
     }
@@ -56,7 +50,6 @@ public class Document extends BaseEntity {
         this.title = title;
     }
 
-    @Column(name = "date")
     public LocalDate getDate() {
         return date;
     }
@@ -65,7 +58,6 @@ public class Document extends BaseEntity {
         this.date = date;
     }
 
-    @Column(name = "expired_date")
     public LocalDate getExpiredDate() {
         return expiredDate;
     }
@@ -74,7 +66,6 @@ public class Document extends BaseEntity {
         this.expiredDate = expiredDate;
     }
 
-    @Column(name = "expired_time")
     public LocalTime getExpiredTime() {
         return expiredTime;
     }
@@ -83,7 +74,6 @@ public class Document extends BaseEntity {
         this.expiredTime = expiredTime;
     }
 
-    @Column(name = "description", columnDefinition = "TEXT")
     public String getDescription() {
         return description;
     }
@@ -92,7 +82,6 @@ public class Document extends BaseEntity {
         this.description = description;
     }
 
-    @Column(name = "renew_date")
     public LocalDate getRenewDate() {
         return renewDate;
     }
@@ -101,11 +90,11 @@ public class Document extends BaseEntity {
         this.renewDate = renewDate;
     }
 
-    public User getUser() {
+    public UserServiceModel getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserServiceModel user) {
         this.user = user;
     }
 }

@@ -7,14 +7,6 @@ import java.util.List;
 public interface SubjectService {
     SubjectServiceModel addSubject(SubjectServiceModel subjectServiceModel, String userName);
 
-    List<SubjectServiceModel> findAllSubjects();
-
-    SubjectServiceModel findSubjectsById(String id);
-
-    SubjectServiceModel editSubject(SubjectServiceModel subjectServiceModel);
-
-    void deleteSubject(String id);
-
     List<SubjectServiceModel> findAllSubjects(String username);
 
     SubjectServiceModel findSubjectsById(String id, String username);

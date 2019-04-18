@@ -36,25 +36,6 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public SubjectServiceModel editSubject(SubjectServiceModel subjectServiceModel) {
-        Subject subject = this.subjectRepository.findById(subjectServiceModel.getId()).orElse(null);
-        if (subject == null){
-            //to do
-        }
-        subject.setSubjectType(this.modelMapper.map(subjectServiceModel.getSubjectType(), SubjectType.class));
-        subject.setName(subjectServiceModel.getName());
-        subject.setDescription(subjectServiceModel.getDescription());
-        Subject subjectSaved = saveSubject(subject);
-        return this.modelMapper.map(subjectSaved, SubjectServiceModel.class);
-    }
-
-    @Override
-    public void deleteSubject(String id) {
-        //throws EmptyResultDataAccessException
-       this.subjectRepository.deleteById(id);
-    }
-
-    @Override
     public List<SubjectServiceModel> findAllSubjects(String username) {
         UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
         User user = this.modelMapper.map(userServiceModel, User.class);
@@ -101,23 +82,6 @@ public class SubjectServiceImpl implements SubjectService {
         subject.setDescription(subjectServiceModel.getDescription());
         Subject subjectSaved = saveSubject(subject);
         return this.modelMapper.map(subjectSaved, SubjectServiceModel.class);
-    }
-
-    @Override
-    public List<SubjectServiceModel> findAllSubjects() {
-        return this.subjectRepository.findAll()
-                .stream()
-                .map(o -> this.modelMapper.map(o, SubjectServiceModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public SubjectServiceModel findSubjectsById(String id) {
-        Subject subject = this.subjectRepository.findById(id).orElse(null);
-        if (subject == null){
-            return null;
-        }
-        return this.modelMapper.map(subject, SubjectServiceModel.class);
     }
 
     private Subject saveSubject(Subject subject) {
