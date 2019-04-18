@@ -20,5 +20,7 @@ public interface UserService extends UserDetailsService {
 
     boolean isAdmin(String id);
 
+    UserServiceModel findUserByUserName(String username);
+
     String getUserLangByName(String username);
 }

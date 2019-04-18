@@ -1,0 +1,40 @@
+<th:block th:fragment>
+    <div class="form-group">
+        <label for="inputType">Type</label>
+        <select class="form-control" th:field="*{subjectType.id}" id="inputType"
+                th:classappend="${#fields.hasErrors('subjectType')}? 'border-danger'">
+            <th:block th:each="type: ${subjectTypes}">
+                <option th:value="${type.id}"><span th:text="${type.title}"></span></option>
+            </th:block>
+        </select>
+        <small id="typeHelp" class="form-text text-muted">
+            <div class="text-danger"
+                 th:each="error : ${#fields.errors('subjectType')}"
+                 th:text="${error}">
+            </div>
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="add-subject-title" class="font-weight-bold">Name</label>
+        <input type="text" class="form-control text-center" id="add-subject-name" th:field="*{name}"
+               th:classappend="${#fields.hasErrors('name')}? 'border-danger'">
+        <small id="nameHelp" class="form-text text-muted">
+            <div class="text-danger"
+                 th:each="error : ${#fields.errors('name')}"
+                 th:text="${error}">
+            </div>
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="add-subject-description" class="font-weight-bold">Description</label>
+        <textarea id="add-subject-description" cols="41" rows="5" th:field="*{description}"
+                  th:classappend="${#fields.hasErrors('description')}? 'border-danger'">
+            </textarea>
+        <small id="descriptionHelp" class="form-text text-muted">
+            <div class="text-danger"
+                 th:each="error : ${#fields.errors('description')}"
+                 th:text="${error}">
+            </div>
+        </small>
+    </div>
+</th:block>

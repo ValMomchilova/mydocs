@@ -4,11 +4,9 @@ import com.val.mydocs.domain.models.binding.DocumentTypeBindingModel;
 import com.val.mydocs.domain.models.service.DocumentTypeServiceModel;
 import com.val.mydocs.domain.models.view.DocumentTypeAllViewModel;
 import com.val.mydocs.domain.models.view.DocumentTypeDetailsViewModel;
-import com.val.mydocs.serivce.CloudinaryService;
 import com.val.mydocs.serivce.DocumentTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,16 +23,11 @@ import java.util.stream.Collectors;
 public class DocumentTypeController extends BaseController {
     private final DocumentTypeService documentTypeService;
     private final ModelMapper modelMapper;
-    private final CloudinaryService cloudinaryService;
-    private final MessageSource messageSource;
-
 
     @Autowired
-    public DocumentTypeController(DocumentTypeService documentTypeService, ModelMapper modelMapper, CloudinaryService cloudinaryService, MessageSource messageSource) {
+    public DocumentTypeController(DocumentTypeService documentTypeService, ModelMapper modelMapper) {
         this.documentTypeService = documentTypeService;
         this.modelMapper = modelMapper;
-        this.cloudinaryService = cloudinaryService;
-        this.messageSource = messageSource;
     }
 
     @GetMapping("/document-types/add")
