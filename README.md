@@ -1,2 +1,2 @@
 # mydocs
-A document expiry tracking system
+Documents expiry tracking system
