@@ -11,10 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.naming.AuthenticationException;
@@ -150,11 +147,29 @@ public class DocumentController extends BaseController {
     @PostMapping("document/delete/{id}")
     public ModelAndView deleteDocumentConfirm(@PathVariable String id,
                                              Principal principal) throws AuthenticationException {
-        String userName = getPrincipalName(principal);
+        String userName = this.getPrincipalName(principal);
 
         this.documentService.deleteDocument(id, userName);
 
         return super.redirect("/document/all");
+    }
+
+    @GetMapping("/fetch/{subjectId}")
+    @ResponseBody
+    public List<DocumentAllViewModel> fetchBysubject(@PathVariable String subjectId,
+                                                     Principal principal) throws AuthenticationException {
+        String username = this.getPrincipalName(principal);
+        if(subjectId.equals("all")) {
+            return this.documentService.findAllDocuments(username)
+                    .stream()
+                    .map(document -> this.modelMapper.map(document, DocumentAllViewModel.class))
+                    .collect(Collectors.toList());
+        }
+
+        return this.documentService.findAllBySubject(subjectId, username)
+                .stream()
+                .map(document -> this.modelMapper.map(document, DocumentAllViewModel.class))
+                .collect(Collectors.toList());
     }
 
     private String getPrincipalName(Principal principal) throws AuthenticationException {

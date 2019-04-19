@@ -12,6 +12,7 @@ public class SubjectTypeBindingModel {
     private String description;
     private MultipartFile image;
     private String imageUrl;
+    private Integer typeOrder;
 
     public SubjectTypeBindingModel() {
     }
@@ -57,5 +58,13 @@ public class SubjectTypeBindingModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Integer getTypeOrder() {
+        return typeOrder;
+    }
+
+    public void setTypeOrder(Integer typeOrder) {
+        this.typeOrder = typeOrder;
     }
 }

@@ -14,20 +14,20 @@
     <table class="table table-hover w-75 mx-auto">
         <thead>
         <tr class="row mx-auto">
-            <th class="col-md-1 text-center">#</th>
-            <th class="col-md-3 text-center">Image</th>
+            <th class="col-md-1 text-center">Order</th>
+            <th class="col-md-2 text-center">Image</th>
             <th class="col-md-3 text-center">Title</th>
-            <th class="col-md-3 text-center">Actions</th>
+            <th class="col-md-4 text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
         <th:block th:each="type, iter : ${subjectTypes}">
             <tr class="row mx-auto">
-                <th class="col-md-1 text-center" th:text="${iter.index + 1}"></th>
-                <td class="col-md-3"><div class="text-center"><img th:src="${type.imageUrl}" width="40" height="40"
+                <td class="col-md-1 text-center" th:text="${type.typeOrder}"></td>
+                <td class="col-md-2"><div class="text-center"><img th:src="${type.imageUrl}" width="40" height="40"
                                                                    alt="Subject type"></div></td>
                 <td class="col-md-3 text-center" th:text="${type.title}"></td>
-                <td class="col-md-3 text-center">
+                <td class="col-md-4 text-center">
                     <a th:href="@{/subject-types/details/{id}(id=${type.id})}" class="btn btn-secondary font-weight-bold text-white ml-1">Details</a>
                     <a th:href="@{/subject-types/edit/{id}(id=${type.id})}" class="btn btn-success font-weight-bold text-white ml-1">Edit</a>
                     <a th:href="@{/subject-types/delete/{id}(id=${type.id})}" class="btn btn-danger font-weight-bold text-white ml-1">Delete</a>

@@ -4,6 +4,7 @@ public class SubjectTypeAllViewModel {
     private String title;
     private String imageUrl;
     private String id;
+    private Integer typeOrder;
 
     public SubjectTypeAllViewModel() {
     }
@@ -30,5 +31,13 @@ public class SubjectTypeAllViewModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Integer getTypeOrder() {
+        return typeOrder;
+    }
+
+    public void setTypeOrder(Integer typeOrder) {
+        this.typeOrder = typeOrder;
     }
 }

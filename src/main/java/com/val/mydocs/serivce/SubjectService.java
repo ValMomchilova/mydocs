@@ -9,6 +9,8 @@ public interface SubjectService {
 
     List<SubjectServiceModel> findAllSubjects(String username);
 
+    List<SubjectServiceModel> findAllSubjectsBySubjectTypeOrder(String username);
+
     SubjectServiceModel findSubjectsById(String id, String username);
 
     void deleteSubject(String id, String username);

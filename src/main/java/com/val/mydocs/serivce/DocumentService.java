@@ -2,6 +2,7 @@ package com.val.mydocs.serivce;
 
 import com.val.mydocs.domain.models.service.DocumentServiceModel;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface DocumentService {
@@ -14,4 +15,6 @@ public interface DocumentService {
     void deleteDocument(String id, String username);
 
     DocumentServiceModel editDocument(DocumentServiceModel subjectServiceModel, String username);
+
+    List<Object> findAllBySubject(String subjectId, String username);
 }

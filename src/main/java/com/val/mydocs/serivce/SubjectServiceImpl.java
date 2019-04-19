@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,15 @@ public class SubjectServiceImpl implements SubjectService {
                 .stream()
                 .map(o -> this.modelMapper.map(o, SubjectServiceModel.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SubjectServiceModel> findAllSubjectsBySubjectTypeOrder(String username) {
+        List<SubjectServiceModel> subjectServiceModels = this.findAllSubjects(username);
+        List<SubjectServiceModel> orderSubjects = subjectServiceModels.stream()
+                .sorted(Comparator.comparingInt(s -> s.getSubjectType().getTypeOrder()))
+                .collect(Collectors.toList());
+        return orderSubjects;
     }
 
     @Override

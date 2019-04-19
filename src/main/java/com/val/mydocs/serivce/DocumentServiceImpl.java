@@ -2,8 +2,10 @@ package com.val.mydocs.serivce;
 
 import com.val.mydocs.domain.entities.Document;
 import com.val.mydocs.domain.entities.DocumentType;
+import com.val.mydocs.domain.entities.Subject;
 import com.val.mydocs.domain.entities.User;
 import com.val.mydocs.domain.models.service.DocumentServiceModel;
+import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.service.UserServiceModel;
 import com.val.mydocs.repository.DocumentRepository;
 import org.modelmapper.ModelMapper;
@@ -17,12 +19,14 @@ import java.util.stream.Collectors;
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final UserService userService;
+    private final SubjectService subjectService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, UserService userService, ModelMapper modelMapper) {
+    public DocumentServiceImpl(DocumentRepository documentRepository, UserService userService, SubjectService subjectService, ModelMapper modelMapper) {
         this.documentRepository = documentRepository;
         this.userService = userService;
+        this.subjectService = subjectService;
         this.modelMapper = modelMapper;
     }
 
@@ -37,8 +41,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public List<DocumentServiceModel> findAllDocuments(String username) {
-        UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
-        User user = this.modelMapper.map(userServiceModel, User.class);
+        User user = this.findUser(username);
         List<Document> userDocuments = this.documentRepository.findDocumentsByUser(user);
         return userDocuments
                 .stream()
@@ -48,8 +51,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentServiceModel findDocumentsById(String id, String username) {
-        UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
-        User user = this.modelMapper.map(userServiceModel, User.class);
+        User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(id, user);
         if (document == null){
             return null;
@@ -59,8 +61,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public void deleteDocument(String id, String username) {
-        UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
-        User user = this.modelMapper.map(userServiceModel, User.class);
+        User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(id, user);
         if (document == null){
             throw new IllegalArgumentException("Document is not found or not belongs to the user");
@@ -71,8 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentServiceModel editDocument(DocumentServiceModel documentServiceModel, String username) {
-        UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
-        User user = this.modelMapper.map(userServiceModel, User.class);
+        User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(documentServiceModel.getId(), user);
         if (document == null){
             throw new IllegalArgumentException("Document is not found or not belongs to the user");
@@ -84,7 +84,27 @@ public class DocumentServiceImpl implements DocumentService {
         return this.modelMapper.map(documentSaved, DocumentServiceModel.class);
     }
 
+    @Override
+    public List<Object> findAllBySubject(String subjectId, String username) {
+        User user = this.findUser(username);
+        SubjectServiceModel subjectServiceModel = this.subjectService.findSubjectsById(subjectId, username);
+        if (subjectServiceModel == null){
+            throw new IllegalArgumentException("Subject is not found or not belongs to the user");
+        }
+        Subject subject = this.modelMapper.map(subjectServiceModel, Subject.class);
+        List<Document> userDocuments = this.documentRepository.findDocumentsByUserAndAndSubject(user, subject);
+        return userDocuments
+                .stream()
+                .map(o -> this.modelMapper.map(o, DocumentServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
     private Document saveDocument(Document document) {
         return this.documentRepository.save(document);
+    }
+
+    private User findUser(String username) {
+        UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
+        return this.modelMapper.map(userServiceModel, User.class);
     }
 }

@@ -5,6 +5,7 @@ public class SubjectTypeServiceModel {
     private String title;
     private String description;
     private String imageUrl;
+    private Integer typeOrder;
 
     public SubjectTypeServiceModel() {
     }
@@ -39,5 +40,13 @@ public class SubjectTypeServiceModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Integer getTypeOrder() {
+        return typeOrder;
+    }
+
+    public void setTypeOrder(Integer typeOrder) {
+        this.typeOrder = typeOrder;
     }
 }

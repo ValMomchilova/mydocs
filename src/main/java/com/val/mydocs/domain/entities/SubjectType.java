@@ -10,6 +10,7 @@ public class SubjectType extends BaseEntity {
     private String title;
     private String description;
     private String imageUrl;
+    private Integer typeOrder;
 
     public SubjectType() {
     }
@@ -39,5 +40,14 @@ public class SubjectType extends BaseEntity {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Column(name = "type_order")
+    public Integer getTypeOrder() {
+        return typeOrder;
+    }
+
+    public void setTypeOrder(Integer typeOrder) {
+        this.typeOrder = typeOrder;
     }
 }

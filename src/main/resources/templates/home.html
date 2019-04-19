@@ -12,18 +12,41 @@
     <header>
         <th:block th:include="~{fragments/navbar}"></th:block>
     </header>
-    <main>
+    <main class="mt-3">
         <div class="jumbotron md-background mt-4">
             <h1>My Docs</h1>
             <hr/>
-            <p th:text="#{home.description}"></p>
-            HOME
+            <div class="row d-flex justify-content-between">
+                <div class="documents-navigation col-md-3">
+                    <form class="mt-3">
+                        <div class="custom-control custom-radio mt-3 ">
+                            <input type="radio" id="allRadio" name="selection"
+                                   class="custom-control-input"
+                                   value="all">
+                            <label class="h4 custom-control-label" for="allRadio">All</label>
+                        </div>
+                        <th:block th:each="subject : ${sbjects}" th:object="${subject}">
+                            <div class="custom-control custom-radio mt-3 ">
+                                <input type="radio" th:id="|*{name.toLowerCase()}Radio|" name="selection"
+                                       class="custom-control-input"
+                                       th:value="*{id}">
+                                <label class="h4 custom-control-label" th:for="|*{name.toLowerCase()}Radio|"
+                                       th:text="*{name}"></label>
+                            </div>
+                        </th:block>
+                    </form>
+                </div>
+                <div class="data col-md-8">
+                    <div class="documents-data"></div>
+                </div>
+            </div>
         </div>
+
+        <footer>
+            <th:block th:include="~{fragments/footer}"></th:block>
+        </footer>
     </main>
-    <footer>
-        <th:block th:include="~{fragments/footer}"></th:block>
-    </footer>
-</body>
 </div>
+
 </body>
 </html>
