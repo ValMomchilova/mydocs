@@ -1,0 +1,36 @@
+<th:block th:fragment>
+    <div class="row text-center">
+        <img th:src="*{subject.subjectType.imageUrl}" width="100" height="100" alt="Subject type">
+        <h1 th:text="Subject: ${subject.name}"></h1>
+    </div>
+    <div class="row">
+        <div class="col col-md-12 mt-5">
+            <h1 th:text="${model.documentType.title}"></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12 mt-5">
+            <h1 th:text="${model.title}"></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12 mt-5">
+            <h1 th:text="${model.date}"></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12 mt-5">
+            <h1 th:text="${model.expiredDate}"></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12 mt-5">
+            <h1 th:text="${model.expiredTime}"></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12 mt-3">
+            <h4 th:text="'Desciption: ' + ${model.description}"></h4>
+        </div>
+    </div>
+</th:block>

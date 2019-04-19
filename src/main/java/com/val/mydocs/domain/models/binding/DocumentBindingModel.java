@@ -1,5 +1,8 @@
 package com.val.mydocs.domain.models.binding;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -49,6 +52,8 @@ public class DocumentBindingModel {
         this.title = title;
     }
 
+    @NotNull(message = "must not be empty")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     public LocalDate getDate() {
         return date;
     }
@@ -57,6 +62,8 @@ public class DocumentBindingModel {
         this.date = date;
     }
 
+    @NotNull(message = "must not be empty")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     public LocalDate getExpiredDate() {
         return expiredDate;
     }
@@ -65,6 +72,7 @@ public class DocumentBindingModel {
         this.expiredDate = expiredDate;
     }
 
+    @DateTimeFormat(pattern = "hh:mm")
     public LocalTime getExpiredTime() {
         return expiredTime;
     }

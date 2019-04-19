@@ -32,6 +32,8 @@
                                        th:value="*{id}">
                                 <label class="h4 custom-control-label" th:for="|*{name.toLowerCase()}Radio|"
                                        th:text="*{name}"></label>
+                                <a th:href="@{/document/add}"
+                                   class="btn btn-success font-weight-bold text-white ml-1">Add</a>
                             </div>
                         </th:block>
                     </form>
@@ -47,6 +49,62 @@
         </footer>
     </main>
 </div>
+<script type="text/javascript">
+    function formatDocument(document) {
+        return '<div class="document">'
+            + '<div class="text-center">'
+            + `<a href="/documents/details/${document.id}"><img src="${document.subject.subjectType.imageUrl}" class="document-image-home img-thumbnail px-auto" alt="${document.name}"/></a>`
+            + '</div>'
+            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.title}"></h5>`
+            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.documentType.title}"></h5>`
+            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.expiredDate}"></h5>`
+            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.expiredTime}"></h5>`
+            + '</div>'
+    }
 
+    $(document).ready(function () {
+        $('#allRadio').attr('checked', true);
+
+        fetch('http://localhost:8000/documents/fetch/all')
+            .then((response) => response.json())
+            .then((json) => {
+                $('.documents-data').empty();
+
+                if (json.length === 0) {
+                    $('.documents-data').append(`<h1 class="text-center font-weight-bold">There are no documents in the ${category} category.</h1>`)
+                } else {
+                    for (let i = 0; i < json.length; i += 3) {
+                        $('.documents-data').append('<div class="documents-row row d-flex justify-content-around mt-5">');
+                        if(i < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i]));
+                        if(i + 1 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 1]));
+                        if(i + 2 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 2]));
+                    }
+                }
+            })
+    });
+
+    $('input[type=radio][name=selection]').change(function () {
+        let categoryId = $(this).val();
+        let category = $(this).text();
+
+        fetch('http://localhost:8000/documents/fetch/' + categoryId)
+            .then((response) => response.json())
+            .then((json) => {
+                $('.documents-data').empty();
+
+                if (json.length === 0) {
+                    $('.documents-data')
+                        .append(`<h1 class="text-center font-weight-bold">There are no documents in the ${category} category.</h1>`)
+                } else {
+                    for (let i = 0; i < json.length; i += 3) {
+                        $('.documents-data').append('<div class="documents-row row d-flex justify-content-around mt-5">');
+                        if(i < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i]));
+                        if(i + 1 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 1]));
+                        if(i + 2 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 2]));
+                    }
+                }
+            })
+    });
+</script>
 </body>
 </html>

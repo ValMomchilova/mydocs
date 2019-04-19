@@ -17,27 +17,12 @@
             <th:block th:include="~{fragments/documenttype/document-type-details}"></th:block>
         </div>
         <hr class="hr-2 bg-dark w-25">
-        <div class="button-holder d-flex justify-content-center">
-            <button type="submit" onClick="return confSubmit(this.form);" class="btn btn-danger">Delete</button>
-        </div>
+        <th:block th:include="~{fragments/delete-btn}"></th:block>
     </form>
 </main>
 <footer>
     <th:block th:include="~{fragments/footer}"></th:block>
 </footer>
 
-<input type="hidden" id="delete-message" th:value="#{delete.item.messsage}"></input>
-<script th:inline="javascript">
-    function confSubmit(form) {
-        let message =  $('#delete-message').val()
-        if (confirm(message)) {
-            form.submit();
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-</script>
 </body>
 </html>

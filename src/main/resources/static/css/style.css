@@ -16,8 +16,18 @@
     color: #035e4f;
 }
 
+img.img-thumbnail {
+    border: 1px solid #ddd; /* Gray border */
+    border-radius: 4px; /* Rounded border */
+    padding: 5px; /* Some padding */
+    max-width: 40px;
+    max-height: 40px;
+}
+
 /*boostrap*/
 .btn-success{
     background-color: #52b7b5;
 }
+
+
 
