@@ -2,8 +2,6 @@ package com.val.mydocs.domain.entities;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "documents")
@@ -16,6 +14,7 @@ public class Document extends BaseEntity {
     private String description;
     private LocalDate renewDate;
     private User user;
+    private Boolean autoRenew;
 
     public Document() {
     }
@@ -102,5 +101,14 @@ public class Document extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Column(name = "auto_renew")
+    public Boolean getAutoRenew() {
+        return autoRenew;
+    }
+
+    public void setAutoRenew(Boolean autoRenew) {
+        this.autoRenew = autoRenew;
     }
 }

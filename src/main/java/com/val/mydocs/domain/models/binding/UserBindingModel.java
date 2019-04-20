@@ -2,6 +2,7 @@ package com.val.mydocs.domain.models.binding;
 
 import com.val.mydocs.web.validators.FieldsEquality;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -31,6 +32,7 @@ public class UserBindingModel {
     @NotEmpty
     @NotNull
     @Length(min = 3, max = 12)
+    @SafeHtml()
     public String getUsername() {
         return username;
     }

@@ -1,7 +1,6 @@
 package com.val.mydocs.domain.models.service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class DocumentServiceModel {
     private String id;
@@ -13,6 +12,7 @@ public class DocumentServiceModel {
     private String description;
     private LocalDate renewDate;
     private UserServiceModel user;
+    private Boolean autoRenew;
 
     public DocumentServiceModel() {
     }
@@ -87,5 +87,13 @@ public class DocumentServiceModel {
 
     public void setUser(UserServiceModel user) {
         this.user = user;
+    }
+
+    public Boolean getAutoRenew() {
+        return autoRenew;
+    }
+
+    public void setAutoRenew(Boolean autoRenew) {
+        this.autoRenew = autoRenew;
     }
 }

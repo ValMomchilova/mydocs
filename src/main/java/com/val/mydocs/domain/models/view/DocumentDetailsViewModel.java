@@ -1,7 +1,6 @@
 package com.val.mydocs.domain.models.view;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class DocumentDetailsViewModel {
     private String id;
@@ -12,6 +11,7 @@ public class DocumentDetailsViewModel {
     private LocalDate expiredDate;
     private String description;
     private LocalDate renewDate;
+    private Boolean autoRenew;
 
     public DocumentDetailsViewModel() {
     }
@@ -78,5 +78,13 @@ public class DocumentDetailsViewModel {
 
     public void setRenewDate(LocalDate renewDate) {
         this.renewDate = renewDate;
+    }
+
+    public Boolean getAutoRenew() {
+        return autoRenew;
+    }
+
+    public void setAutoRenew(Boolean autoRenew) {
+        this.autoRenew = autoRenew;
     }
 }

@@ -16,7 +16,9 @@ public interface DocumentService {
 
     DocumentServiceModel editDocument(DocumentServiceModel subjectServiceModel, String username);
 
-    List<Object> findAllBySubject(String subjectId, String username);
+    List<Object> findAllBySubjectOrderByExpiredDate(String subjectId, String username);
 
     DocumentServiceModel renewDocument(DocumentServiceModel documentServiceModel, String userName);
+
+    void AutoRenewDocuments();
 }

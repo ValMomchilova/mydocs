@@ -123,7 +123,7 @@ public class DocumentController extends BaseController {
         DocumentServiceModel documentServiceModel = this.modelMapper.map(model, DocumentServiceModel.class);
         this.documentService.editDocument(documentServiceModel, userName);
 
-        return super.redirect("/home" + id);
+        return super.redirect("/home");
     }
 
     @GetMapping("document/delete/{id}")
@@ -195,7 +195,7 @@ public class DocumentController extends BaseController {
                     .collect(Collectors.toList());
         }
 
-        return this.documentService.findAllBySubject(subjectId, username)
+        return this.documentService.findAllBySubjectOrderByExpiredDate(subjectId, username)
                 .stream()
                 .map(document -> this.modelMapper.map(document, DocumentAllViewModel.class))
                 .collect(Collectors.toList());

@@ -4,7 +4,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class DocumentBindingModel {
     private String id;
@@ -15,6 +14,7 @@ public class DocumentBindingModel {
     private LocalDate expiredDate;
     private String description;
     private LocalDate renewDate;
+    private Boolean autoRenew;
 
     public DocumentBindingModel() {
     }
@@ -85,5 +85,13 @@ public class DocumentBindingModel {
 
     public void setRenewDate(LocalDate renewDate) {
         this.renewDate = renewDate;
+    }
+
+    public Boolean getAutoRenew() {
+        return autoRenew;
+    }
+
+    public void setAutoRenew(Boolean autoRenew) {
+        this.autoRenew = autoRenew;
     }
 }

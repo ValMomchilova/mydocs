@@ -10,6 +10,7 @@ import com.val.mydocs.domain.models.service.UserServiceModel;
 import com.val.mydocs.repository.DocumentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,7 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentServiceModel findDocumentsById(String id, String username) {
         User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(id, user);
-        if (document == null){
+        if (document == null) {
             return null;
         }
         return this.modelMapper.map(document, DocumentServiceModel.class);
@@ -67,7 +68,7 @@ public class DocumentServiceImpl implements DocumentService {
     public void deleteDocument(String id, String username) {
         User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(id, user);
-        if (document == null){
+        if (document == null) {
             throw new IllegalArgumentException("Document is not found or not belongs to the user");
         }
         //throws EmptyResultDataAccessException
@@ -78,7 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentServiceModel editDocument(DocumentServiceModel documentServiceModel, String username) {
         User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(documentServiceModel.getId(), user);
-        if (document == null){
+        if (document == null) {
             throw new IllegalArgumentException("Document is not found or not belongs to the user");
         }
         document.setDocumentType(this.modelMapper.map(documentServiceModel.getDocumentType(), DocumentType.class));
@@ -89,14 +90,15 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<Object> findAllBySubject(String subjectId, String username) {
+    public List<Object> findAllBySubjectOrderByExpiredDate(String subjectId, String username) {
         User user = this.findUser(username);
         SubjectServiceModel subjectServiceModel = this.subjectService.findSubjectsById(subjectId, username);
-        if (subjectServiceModel == null){
+        if (subjectServiceModel == null) {
             throw new IllegalArgumentException("Subject is not found or not belongs to the user");
         }
         Subject subject = this.modelMapper.map(subjectServiceModel, Subject.class);
-        List<Document> userDocuments = this.documentRepository.findDocumentsByUserAndAndSubject(user, subject);
+        List<Document> userDocuments = this.documentRepository
+                .findDocumentsByUserAndAndSubjectOrderByExpiredDate(user, subject);
         return userDocuments
                 .stream()
                 .map(o -> this.modelMapper.map(o, DocumentServiceModel.class))
@@ -108,7 +110,7 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentServiceModel renewDocument(DocumentServiceModel documentServiceModel, String username) {
         User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(documentServiceModel.getId(), user);
-        if (document == null){
+        if (document == null) {
             throw new IllegalArgumentException("Document is not found or not belongs to the user");
         }
         document.setRenewDate(this.dateTimeService.getCurrentDate());
@@ -126,6 +128,22 @@ public class DocumentServiceImpl implements DocumentService {
         Document documentNew = saveDocument(documenToRenew);
 
         return this.modelMapper.map(documentNew, DocumentServiceModel.class);
+    }
+
+    @Override
+    // at 12:00 AM every day
+    @Scheduled(cron = "0 0 0 * * *")
+    public void AutoRenewDocuments() {
+        System.out.println("schedule");
+        List<Document> documentsToRenew = this.documentRepository
+                .findDocumentByRenewDateAndAutoRenewAndExpiredDateIsBefore(null,
+                        true
+                        , this.dateTimeService.getCurrentDate());
+        for (Document document : documentsToRenew) {
+            this.renewDocument(this.modelMapper.map(document, DocumentServiceModel.class),
+                    document.getUser().getUsername());
+        }
+
     }
 
     private Document saveDocument(Document document) {
