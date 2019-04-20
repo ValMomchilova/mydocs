@@ -12,16 +12,13 @@
     <div class="container mt-4">
     <h1 class="text-center text-dark">Add document</h1>
     <hr class="hr-2 bg-dark w-25">
-    <form id="add-document-form" class="form w-25 mx-auto mb-5" th:action="@{/documents/add}" method="post"
+    <form id="add-document-form" class="form w-25 mx-auto mb-5" th:action="@{/document/add/{subjectId}(subjectId=${model.subject.id})}" method="post"
           th:object="${model}"
           enctype="multipart/form-data">
 
         <th:block th:include="~{fragments/document/document}"></th:block>
 
         <hr class="hr-2 bg-dark w-25">
-        <!--<div class="button-holder d-flex justify-content-center">-->
-            <!--<button type="submit" class="btn btn-success">Add</button>-->
-        <!--</div>-->
         <div class="form-group d-flex justify-content-center">
         <button  id="btnSubmit" type="submit" class="btn btn-primary btn-success">Add</button>
         </div>

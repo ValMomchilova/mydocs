@@ -10,7 +10,6 @@ public class DocumentDetailsViewModel {
     private String title;
     private LocalDate date;
     private LocalDate expiredDate;
-    private LocalTime expiredTime;
     private String description;
     private LocalDate renewDate;
 
@@ -63,14 +62,6 @@ public class DocumentDetailsViewModel {
 
     public void setExpiredDate(LocalDate expiredDate) {
         this.expiredDate = expiredDate;
-    }
-
-    public LocalTime getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(LocalTime expiredTime) {
-        this.expiredTime = expiredTime;
     }
 
     public String getDescription() {

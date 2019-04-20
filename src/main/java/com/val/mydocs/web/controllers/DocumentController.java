@@ -1,12 +1,15 @@
 package com.val.mydocs.web.controllers;
 
 import com.val.mydocs.domain.models.binding.DocumentBindingModel;
+import com.val.mydocs.domain.models.binding.SubjectBindingModel;
 import com.val.mydocs.domain.models.service.DocumentServiceModel;
 import com.val.mydocs.domain.models.service.DocumentTypeServiceModel;
+import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.view.DocumentAllViewModel;
 import com.val.mydocs.domain.models.view.DocumentDetailsViewModel;
 import com.val.mydocs.serivce.DocumentService;
 import com.val.mydocs.serivce.DocumentTypeService;
+import com.val.mydocs.serivce.SubjectService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,35 +27,44 @@ import java.util.stream.Collectors;
 public class DocumentController extends BaseController {
     private final DocumentService documentService;
     private final DocumentTypeService documentTypeService;
+    private final SubjectService subjectService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public DocumentController(DocumentService documentService, DocumentTypeService documentTypeService, ModelMapper modelMapper) {
+    public DocumentController(DocumentService documentService, DocumentTypeService documentTypeService, SubjectService subjectService, ModelMapper modelMapper) {
         this.documentService = documentService;
         this.documentTypeService = documentTypeService;
+        this.subjectService = subjectService;
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/document/add")
-    public ModelAndView addDocument(@ModelAttribute(name = "model") DocumentBindingModel model,
+    @GetMapping("/document/add/{subjectId}")
+    public ModelAndView addDocument(@PathVariable String subjectId, @ModelAttribute(name = "model") DocumentBindingModel model,
                                    ModelAndView modelAndView,
                                    Principal principal) throws AuthenticationException {
-        if (principal == null) {
-            throw new AuthenticationException();
-            // to do: error
-        }
+
+        String username = this.getPrincipalName(principal);
+        SubjectBindingModel subjectBindingModel = getSubject(subjectId, username);
+        model.setSubject(subjectBindingModel);
         modelAndView.addObject("model", model);
         this.AddDocumentTypesModel(modelAndView);
         return this.view("document/add-document", modelAndView);
     }
 
-    @PostMapping("/document/add")
-    public ModelAndView addDocumentConfirm(@Valid @ModelAttribute(name = "model") DocumentBindingModel model,
+    private SubjectBindingModel getSubject(@PathVariable String subjectId, String username) {
+        SubjectServiceModel subjectServiceModel = this.subjectService.findSubjectsById(subjectId, username);
+        return this.modelMapper.map(subjectServiceModel, SubjectBindingModel.class);
+    }
+
+    @PostMapping("/document/add/{subjectId}")
+    public ModelAndView addDocumentConfirm(@PathVariable String subjectId, @Valid @ModelAttribute(name = "model") DocumentBindingModel model,
                                           BindingResult bindingResult,
                                           ModelAndView modelAndView,
                                           Principal principal) throws AuthenticationException {
 
-        String userName = getPrincipalName(principal);
+        String username = getPrincipalName(principal);
+        SubjectBindingModel subjectBindingModel = getSubject(subjectId, username);
+        model.setSubject(subjectBindingModel);
         String view = "document/add-document";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);
@@ -60,9 +72,9 @@ public class DocumentController extends BaseController {
             return this.view(view, modelAndView);
         }
         DocumentServiceModel documentServiceModel = this.modelMapper.map(model, DocumentServiceModel.class);
-        this.documentService.addDocument(documentServiceModel, userName);
+        this.documentService.addDocument(documentServiceModel, username);
 
-        return this.redirect("/document/all");
+        return this.redirect("/home");
     }
 
     @GetMapping("/document/all")
@@ -154,9 +166,9 @@ public class DocumentController extends BaseController {
         return super.redirect("/document/all");
     }
 
-    @GetMapping("/fetch/{subjectId}")
+    @GetMapping("document/fetch/{subjectId}")
     @ResponseBody
-    public List<DocumentAllViewModel> fetchBysubject(@PathVariable String subjectId,
+    public List<DocumentAllViewModel> fetchBySubject(@PathVariable String subjectId,
                                                      Principal principal) throws AuthenticationException {
         String username = this.getPrincipalName(principal);
         if(subjectId.equals("all")) {

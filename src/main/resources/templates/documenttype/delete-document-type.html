@@ -11,7 +11,7 @@
 <main class="mt-3">
     <h1 class="text-center text-danger">Delete document type</h1>
     <hr class="hr-2 bg-dark w-25">
-    <form id="add-document-type-form" class="form w-25 mx-auto" th:action="@{/document-types/delete/{id}(id=${model.id})}"
+    <form id="add-document-type-form" class="form w-25 mx-auto mb-5" th:action="@{/document-types/delete/{id}(id=${model.id})}"
           method="post">
         <div class="jumbotron bg-light text-center">
             <th:block th:include="~{fragments/documenttype/document-type-details}"></th:block>

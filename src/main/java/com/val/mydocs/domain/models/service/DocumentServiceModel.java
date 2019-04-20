@@ -10,7 +10,6 @@ public class DocumentServiceModel {
     private String title;
     private LocalDate date;
     private LocalDate expiredDate;
-    private LocalTime expiredTime;
     private String description;
     private LocalDate renewDate;
     private UserServiceModel user;
@@ -64,14 +63,6 @@ public class DocumentServiceModel {
 
     public void setExpiredDate(LocalDate expiredDate) {
         this.expiredDate = expiredDate;
-    }
-
-    public LocalTime getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(LocalTime expiredTime) {
-        this.expiredTime = expiredTime;
     }
 
     public String getDescription() {

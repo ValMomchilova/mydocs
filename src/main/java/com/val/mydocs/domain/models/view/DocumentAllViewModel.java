@@ -9,7 +9,6 @@ public class DocumentAllViewModel {
     private DocumentTypeDetailsViewModel documentType;
     private String title;
     private LocalDate expiredDate;
-    private LocalTime expiredTime;
 
     public DocumentAllViewModel() {
     }
@@ -52,13 +51,5 @@ public class DocumentAllViewModel {
 
     public void setExpiredDate(LocalDate expiredDate) {
         this.expiredDate = expiredDate;
-    }
-
-    public LocalTime getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(LocalTime expiredTime) {
-        this.expiredTime = expiredTime;
     }
 }

@@ -12,8 +12,8 @@
     <header>
         <th:block th:include="~{fragments/navbar}"></th:block>
     </header>
-    <main class="mt-3">
-        <div class="jumbotron md-background mt-4">
+    <main class="mt-3 mb-3">
+        <div class="jumbotron md-background mt-2">
             <h1>My Docs</h1>
             <hr/>
             <div class="row d-flex justify-content-between">
@@ -26,14 +26,14 @@
                             <label class="h4 custom-control-label" for="allRadio">All</label>
                         </div>
                         <th:block th:each="subject : ${sbjects}" th:object="${subject}">
-                            <div class="custom-control custom-radio mt-3 ">
+                            <div class="custom-control custom-radio mt-2 ">
                                 <input type="radio" th:id="|*{name.toLowerCase()}Radio|" name="selection"
                                        class="custom-control-input"
                                        th:value="*{id}">
                                 <label class="h4 custom-control-label" th:for="|*{name.toLowerCase()}Radio|"
                                        th:text="*{name}"></label>
-                                <a th:href="@{/document/add}"
-                                   class="btn btn-success font-weight-bold text-white ml-1">Add</a>
+                                <a th:href="@{/document/add/{subjectId}(subjectId=*{id})}"
+                                   class="btn btn-success font-weight-bold text-white ml-1">+</a>
                             </div>
                         </th:block>
                     </form>
@@ -43,66 +43,64 @@
                 </div>
             </div>
         </div>
-
-        <footer>
-            <th:block th:include="~{fragments/footer}"></th:block>
-        </footer>
+        <input type="hidden" id="no-documents-message" th:value="#{home.message.noDocuments.subject}"></input>
+        <input type="hidden" id="no-documents-message-all" th:value="#{home.message.noDocuments}"></input>
     </main>
+    <footer>
+        <th:block th:include="~{fragments/footer}"></th:block>
+    </footer>
 </div>
 <script type="text/javascript">
     function formatDocument(document) {
         return '<div class="document">'
             + '<div class="text-center">'
-            + `<a href="/documents/details/${document.id}"><img src="${document.subject.subjectType.imageUrl}" class="document-image-home img-thumbnail px-auto" alt="${document.name}"/></a>`
+            + '<a href="/document/details/' + document.id + '"><img src="' + document.subject.subjectType.imageUrl
+            + '" class="document-image-home img-thumbnail px-auto" alt="' + document.name + '"/></a>'
             + '</div>'
-            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.title}"></h5>`
-            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.documentType.title}"></h5>`
-            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.expiredDate}"></h5>`
-            + `<h5 class="text-center font-weight-bold mt-3" th:text="Name: ${document.expiredTime}"></h5>`
+            + '<h6 class="text-center font-weight-bold mt-3" >' + document.title + '</h6>'
+            + '<h6 class="text-center font-weight-bold mt-3" >' + 'Type: ' + document.documentType.title + '</h6>'
+            + '<h6 class="text-center font-weight-bold mt-3" >' + 'Expired on: ' + document.expiredDate + '</h6>'
             + '</div>'
+    }
+
+    function loadDocuments(json, subjectId) {
+        $('.documents-data').empty();
+
+        if (json.length === 0) {
+            let message = $('#no-documents-message').val()
+            if (subjectId == 'all'){
+                message = $('#no-documents-message-all').val()
+            }
+
+            $('.documents-data').append('<h1 class="text-center font-weight-bold">' + message + '</h1>')
+        } else {
+            for (let i = 0; i < json.length; i += 3) {
+                $('.documents-data').append('<div class="documents-row row d-flex justify-content-around mt-2">');
+                if (i < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i]));
+                if (i + 1 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 1]));
+                if (i + 2 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 2]));
+            }
+        }
     }
 
     $(document).ready(function () {
         $('#allRadio').attr('checked', true);
-
-        fetch('http://localhost:8000/documents/fetch/all')
+        let subjectId = $('input[type=radio][name=selection]').val();
+        fetch('/document/fetch/all')
             .then((response) => response.json())
             .then((json) => {
-                $('.documents-data').empty();
-
-                if (json.length === 0) {
-                    $('.documents-data').append(`<h1 class="text-center font-weight-bold">There are no documents in the ${category} category.</h1>`)
-                } else {
-                    for (let i = 0; i < json.length; i += 3) {
-                        $('.documents-data').append('<div class="documents-row row d-flex justify-content-around mt-5">');
-                        if(i < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i]));
-                        if(i + 1 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 1]));
-                        if(i + 2 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 2]));
-                    }
-                }
+                loadDocuments(json, subjectId);
             })
     });
 
     $('input[type=radio][name=selection]').change(function () {
-        let categoryId = $(this).val();
-        let category = $(this).text();
+        let subjectId = $(this).val();
+        let subject = $(this).text();
 
-        fetch('http://localhost:8000/documents/fetch/' + categoryId)
+        fetch('/document/fetch/' + subjectId)
             .then((response) => response.json())
             .then((json) => {
-                $('.documents-data').empty();
-
-                if (json.length === 0) {
-                    $('.documents-data')
-                        .append(`<h1 class="text-center font-weight-bold">There are no documents in the ${category} category.</h1>`)
-                } else {
-                    for (let i = 0; i < json.length; i += 3) {
-                        $('.documents-data').append('<div class="documents-row row d-flex justify-content-around mt-5">');
-                        if(i < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i]));
-                        if(i + 1 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 1]));
-                        if(i + 2 < json.length) $('.documents-data .documents-row:last-child').append(formatDocument(json[i + 2]));
-                    }
-                }
+                loadDocuments(json, subjectId);
             })
     });
 </script>

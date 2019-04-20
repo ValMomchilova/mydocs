@@ -13,7 +13,6 @@ public class Document extends BaseEntity {
     private String title;
     private LocalDate date;
     private LocalDate expiredDate;
-    private LocalTime expiredTime;
     private String description;
     private LocalDate renewDate;
     private User user;
@@ -74,15 +73,6 @@ public class Document extends BaseEntity {
         this.expiredDate = expiredDate;
     }
 
-    @Column(name = "expired_time")
-    public LocalTime getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(LocalTime expiredTime) {
-        this.expiredTime = expiredTime;
-    }
-
     @Column(name = "description", columnDefinition = "TEXT")
     public String getDescription() {
         return description;
@@ -101,6 +91,11 @@ public class Document extends BaseEntity {
         this.renewDate = renewDate;
     }
 
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id"
+    )
     public User getUser() {
         return user;
     }

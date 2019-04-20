@@ -13,7 +13,6 @@ public class DocumentBindingModel {
     private String title;
     private LocalDate date;
     private LocalDate expiredDate;
-    private LocalTime expiredTime;
     private String description;
     private LocalDate renewDate;
 
@@ -70,15 +69,6 @@ public class DocumentBindingModel {
 
     public void setExpiredDate(LocalDate expiredDate) {
         this.expiredDate = expiredDate;
-    }
-
-    @DateTimeFormat(pattern = "hh:mm")
-    public LocalTime getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(LocalTime expiredTime) {
-        this.expiredTime = expiredTime;
     }
 
     public String getDescription() {
