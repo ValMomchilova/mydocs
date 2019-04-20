@@ -117,16 +117,6 @@ public class UserServiceImpl implements UserService {
         return userServiceModel;
     }
 
-    @Override
-    public String getUserLangByName(String username) {
-        User user = this.userRepository.findUserByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("Username not found."));
-
-        String lang = user.getLang();
-        return lang;
-    }
-
-
     private Set<UserRole> prepareUserRoles(){
         Set<UserRole> userRoles = new HashSet<>();
         String roleName = "USER";

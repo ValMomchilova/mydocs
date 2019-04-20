@@ -16,7 +16,6 @@ public class User implements UserDetails {
     private String password;
     private String email;
     private Set<UserRole> roles;
-    private String lang;
 
     @Id
     @GeneratedValue(generator = "uuid-string")
@@ -69,15 +68,6 @@ public class User implements UserDetails {
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
-    }
-
-    @Column(name="lang", length = 5)
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
     }
 
     @Override

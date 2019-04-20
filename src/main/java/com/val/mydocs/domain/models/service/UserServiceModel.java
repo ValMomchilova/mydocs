@@ -11,7 +11,6 @@ public class UserServiceModel {
     private String password;
     private String email;
     private Set<UserRole> roles;
-    private String lang;
 
     public UserServiceModel() {
     }
@@ -54,13 +53,5 @@ public class UserServiceModel {
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
-    }
-
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
     }
 }

@@ -1,6 +1,7 @@
 package com.val.mydocs.domain.models.binding;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
@@ -36,6 +37,7 @@ public class SubjectTypeBindingModel {
         this.title = title;
     }
 
+    @SafeHtml()
     public String getDescription() {
         return description;
     }

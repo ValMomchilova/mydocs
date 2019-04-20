@@ -1,7 +1,10 @@
 package com.val.mydocs.domain.models.binding;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -35,6 +38,7 @@ public class DocumentBindingModel {
         this.subject = subject;
     }
 
+    @NotNull
     public DocumentTypeBindingModel getDocumentType() {
         return documentType;
     }
@@ -43,6 +47,9 @@ public class DocumentBindingModel {
         this.documentType = documentType;
     }
 
+    @NotEmpty
+    @NotNull
+    @Length(min = 1, max = 30)
     public String getTitle() {
         return title;
     }
@@ -51,7 +58,7 @@ public class DocumentBindingModel {
         this.title = title;
     }
 
-    @NotNull(message = "must not be empty")
+    @NotNull(message = "{error.must.not.be.empty}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     public LocalDate getDate() {
         return date;
@@ -61,7 +68,7 @@ public class DocumentBindingModel {
         this.date = date;
     }
 
-    @NotNull(message = "must not be empty")
+    @NotNull(message = "{error.must.not.be.empty}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     public LocalDate getExpiredDate() {
         return expiredDate;
@@ -71,6 +78,7 @@ public class DocumentBindingModel {
         this.expiredDate = expiredDate;
     }
 
+    @SafeHtml()
     public String getDescription() {
         return description;
     }

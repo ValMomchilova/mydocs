@@ -1,6 +1,11 @@
 package com.val.mydocs.domain.models.binding;
 
 import com.val.mydocs.domain.entities.SubjectType;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.SafeHtml;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class SubjectBindingModel {
     private String id;
@@ -19,6 +24,7 @@ public class SubjectBindingModel {
         this.id = id;
     }
 
+    @NotNull
     public SubjectTypeBindingModel getSubjectType() {
         return subjectType;
     }
@@ -27,6 +33,10 @@ public class SubjectBindingModel {
         this.subjectType = subjectType;
     }
 
+    @NotNull
+    @NotEmpty
+    @Length(max = 30)
+    @SafeHtml()
     public String getName() {
         return name;
     }
@@ -35,6 +45,7 @@ public class SubjectBindingModel {
         this.name = name;
     }
 
+    @SafeHtml()
     public String getDescription() {
         return description;
     }

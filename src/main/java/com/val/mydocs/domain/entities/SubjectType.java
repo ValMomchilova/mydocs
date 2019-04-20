@@ -42,7 +42,7 @@ public class SubjectType extends BaseEntity {
         this.imageUrl = imageUrl;
     }
 
-    @Column(name = "type_order")
+    @Column(name = "type_order", columnDefinition = "int default 0")
     public Integer getTypeOrder() {
         return typeOrder;
     }

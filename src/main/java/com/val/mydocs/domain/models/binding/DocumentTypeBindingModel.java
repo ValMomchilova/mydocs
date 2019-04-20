@@ -1,5 +1,7 @@
 package com.val.mydocs.domain.models.binding;
 
+import org.hibernate.validator.constraints.SafeHtml;
+
 public class DocumentTypeBindingModel {
     private String id;
     private String title;
@@ -16,6 +18,7 @@ public class DocumentTypeBindingModel {
         this.id = id;
     }
 
+    @SafeHtml()
     public String getTitle() {
         return title;
     }
@@ -24,6 +27,7 @@ public class DocumentTypeBindingModel {
         this.title = title;
     }
 
+    @SafeHtml()
     public String getDescription() {
         return description;
     }
