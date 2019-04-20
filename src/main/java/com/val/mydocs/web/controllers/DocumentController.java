@@ -77,19 +77,7 @@ public class DocumentController extends BaseController {
         return this.redirect("/home");
     }
 
-    @GetMapping("/document/all")
-    public ModelAndView allDocuments(ModelAndView modelAndView,
-                                    Principal principal) throws AuthenticationException {
-        String username = getPrincipalName(principal);
-        List<DocumentServiceModel> serviceModels = this.documentService.findAllDocuments(username);
-        List<DocumentAllViewModel> serviceViewModels = serviceModels
-                .stream()
-                .map(o -> this.modelMapper.map(o, DocumentAllViewModel.class))
-                .collect(Collectors.toList());
-        modelAndView.addObject("documents", serviceViewModels);
 
-        return super.view("document/all-document", modelAndView);
-    }
 
     @GetMapping("/document/details/{id}")
     public ModelAndView detailsDocuments(@PathVariable String id,
@@ -109,10 +97,7 @@ public class DocumentController extends BaseController {
                                      @ModelAttribute(name = "model") DocumentBindingModel model,
                                      ModelAndView modelAndView,
                                      Principal principal) throws AuthenticationException {
-        String userName = getPrincipalName(principal);
-
-        DocumentServiceModel documentServiceModel = this.documentService.findDocumentsById(id, userName);
-        model = this.modelMapper.map(documentServiceModel, DocumentBindingModel.class);
+        model = getDocumentModel(id, principal);
 
         modelAndView.addObject("model", model);
         this.AddDocumentTypesModel(modelAndView);
@@ -138,7 +123,7 @@ public class DocumentController extends BaseController {
         DocumentServiceModel documentServiceModel = this.modelMapper.map(model, DocumentServiceModel.class);
         this.documentService.editDocument(documentServiceModel, userName);
 
-        return super.redirect("/document/details/" + id);
+        return super.redirect("/home" + id);
     }
 
     @GetMapping("document/delete/{id}")
@@ -146,10 +131,7 @@ public class DocumentController extends BaseController {
                                       @ModelAttribute(name = "document") DocumentBindingModel document,
                                       ModelAndView modelAndView,
                                       Principal principal) throws AuthenticationException {
-        String userName = getPrincipalName(principal);
-
-        DocumentServiceModel documentServiceModel = this.documentService.findDocumentsById(id, userName);
-        document = this.modelMapper.map(documentServiceModel, DocumentBindingModel.class);
+        document = getDocumentModel(id, principal);
 
         modelAndView.addObject("model", document);
 
@@ -163,7 +145,42 @@ public class DocumentController extends BaseController {
 
         this.documentService.deleteDocument(id, userName);
 
-        return super.redirect("/document/all");
+        return super.redirect("/home");
+    }
+
+    @GetMapping("/document/renew/{id}")
+    public ModelAndView renewDocuments(@PathVariable String id,
+                                      @ModelAttribute(name = "model") DocumentBindingModel model,
+                                      ModelAndView modelAndView,
+                                      Principal principal) throws AuthenticationException {
+        model = getDocumentModel(id, principal);
+        modelAndView.addObject("model", model);
+        this.AddDocumentTypesModel(modelAndView);
+
+        return super.view("document/renew-document", modelAndView);
+    }
+
+    @PostMapping("/document/renew/{id}")
+    public ModelAndView renewDocumentsConfirm(@PathVariable(name = "id") String id,
+                                             @ModelAttribute(name = "model") DocumentBindingModel model,
+                                             BindingResult bindingResult,
+                                             ModelAndView modelAndView,
+                                             Principal principal) throws AuthenticationException {
+        String userName = getPrincipalName(principal);
+
+        DocumentServiceModel documentServiceModel = this.modelMapper.map(model, DocumentServiceModel.class);
+        DocumentServiceModel newDocument = this.documentService.renewDocument(documentServiceModel, userName);
+
+        return super.redirect("/document/edit/" + newDocument.getId());
+    }
+
+    private DocumentBindingModel getDocumentModel(@PathVariable String id, Principal principal) throws AuthenticationException {
+        DocumentBindingModel model;
+        String userName = getPrincipalName(principal);
+
+        DocumentServiceModel documentServiceModel = this.documentService.findDocumentsById(id, userName);
+        model = this.modelMapper.map(documentServiceModel, DocumentBindingModel.class);
+        return model;
     }
 
     @GetMapping("document/fetch/{subjectId}")
@@ -172,7 +189,7 @@ public class DocumentController extends BaseController {
                                                      Principal principal) throws AuthenticationException {
         String username = this.getPrincipalName(principal);
         if(subjectId.equals("all")) {
-            return this.documentService.findAllDocuments(username)
+            return this.documentService.findAllDocumentsOrderByExpiredDate(username)
                     .stream()
                     .map(document -> this.modelMapper.map(document, DocumentAllViewModel.class))
                     .collect(Collectors.toList());

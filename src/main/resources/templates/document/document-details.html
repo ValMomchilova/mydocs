@@ -13,6 +13,13 @@
     <hr class="hr-2 bg-dark w-25">
     <div class="jumbotron bg-light text-center p-2">
         <th:block th:include="~{fragments/document/document-details}"></th:block>
+        <div class="row text-center">
+            <div class="col col-md-12 mt-2">
+                <a th:href="@{/document/edit/{id}(id=${model.id})}" class="btn btn-success font-weight-bold text-white ml-1">Edit</a>
+                <a th:href="@{/document/renew/{id}(id=${model.id})}" class="btn btn-secondary font-weight-bold text-white ml-1">Renew</a>
+                <a th:href="@{/document/delete/{id}(id=${model.id})}" class="btn btn-danger font-weight-bold text-white ml-1">Delete</a>
+            </div>
+        </div>
     </div>
 </main>
 <footer>

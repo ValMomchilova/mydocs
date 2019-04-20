@@ -8,7 +8,7 @@ import java.util.List;
 public interface DocumentService {
     DocumentServiceModel addDocument(DocumentServiceModel subjectServiceModel, String userName);
 
-    List<DocumentServiceModel> findAllDocuments(String username);
+    List<DocumentServiceModel> findAllDocumentsOrderByExpiredDate(String username);
 
     DocumentServiceModel findDocumentsById(String id, String username);
 
@@ -17,4 +17,6 @@ public interface DocumentService {
     DocumentServiceModel editDocument(DocumentServiceModel subjectServiceModel, String username);
 
     List<Object> findAllBySubject(String subjectId, String username);
+
+    DocumentServiceModel renewDocument(DocumentServiceModel documentServiceModel, String userName);
 }

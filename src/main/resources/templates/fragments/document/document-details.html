@@ -28,11 +28,4 @@
             <h6 th:text="'Desciption: ' + ${model.description}"></h6>
         </div>
     </div>
-    <div class="row text-center">
-        <div class="col col-md-12 mt-2">
-            <a th:href="@{/document/edit/{id}(id=${model.id})}" class="btn btn-success font-weight-bold text-white ml-1">Edit</a>
-            <a th:href="@{/document/renew/{id}(id=${model.id})}" class="btn btn-secondary font-weight-bold text-white ml-1">Renew</a>
-            <a th:href="@{/document/delete/{id}(id=${model.id})}" class="btn btn-danger font-weight-bold text-white ml-1">Edit</a>
-        </div>
-    </div>
 </th:block>

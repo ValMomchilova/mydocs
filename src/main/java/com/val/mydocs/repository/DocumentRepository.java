@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, String> {
-    List<Document> findDocumentsByUser(User user);
+
+    List<Document> findDocumentsByUserOrderByExpiredDate(User user);
 
     List<Document> findDocumentsByUserAndAndSubject(User user, Subject subject);
 
