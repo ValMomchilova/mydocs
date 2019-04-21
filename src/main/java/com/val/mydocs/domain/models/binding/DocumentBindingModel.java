@@ -1,5 +1,6 @@
 package com.val.mydocs.domain.models.binding;
 
+import com.val.mydocs.web.validators.FromToDateFieldsSequece;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@FromToDateFieldsSequece(firstFieldName = "date", secondFieldName = "expiredDate")
 public class DocumentBindingModel {
     private String id;
     private SubjectBindingModel subject;

@@ -51,11 +51,6 @@ public class DocumentController extends BaseController {
         return this.view("document/add-document", modelAndView);
     }
 
-    private SubjectBindingModel getSubject(@PathVariable String subjectId, String username) {
-        SubjectServiceModel subjectServiceModel = this.subjectService.findSubjectsById(subjectId, username);
-        return this.modelMapper.map(subjectServiceModel, SubjectBindingModel.class);
-    }
-
     @PostMapping("/document/add/{subjectId}")
     public ModelAndView addDocumentConfirm(@PathVariable String subjectId, @Valid @ModelAttribute(name = "model") DocumentBindingModel model,
                                           BindingResult bindingResult,
@@ -67,8 +62,7 @@ public class DocumentController extends BaseController {
         model.setSubject(subjectBindingModel);
         String view = "document/add-document";
         if (bindingResult.hasErrors()) {
-            modelAndView.addObject("model", model);
-            this.AddDocumentTypesModel(modelAndView);
+            this.prepareErrorsModelAndView(model, bindingResult, modelAndView);
             return this.view(view, modelAndView);
         }
         DocumentServiceModel documentServiceModel = this.modelMapper.map(model, DocumentServiceModel.class);
@@ -115,8 +109,7 @@ public class DocumentController extends BaseController {
 
         String view = "document/edit-document";
         if (bindingResult.hasErrors()) {
-            modelAndView.addObject("model", model);
-            this.AddDocumentTypesModel(modelAndView);
+            this.prepareErrorsModelAndView(model, bindingResult, modelAndView);
             return this.view(view, modelAndView);
         }
 
@@ -174,15 +167,6 @@ public class DocumentController extends BaseController {
         return super.redirect("/document/edit/" + newDocument.getId());
     }
 
-    private DocumentBindingModel getDocumentModel(@PathVariable String id, Principal principal) throws AuthenticationException {
-        DocumentBindingModel model;
-        String userName = getPrincipalName(principal);
-
-        DocumentServiceModel documentServiceModel = this.documentService.findDocumentsById(id, userName);
-        model = this.modelMapper.map(documentServiceModel, DocumentBindingModel.class);
-        return model;
-    }
-
     @GetMapping("document/fetch/{subjectId}")
     @ResponseBody
     public List<DocumentAllViewModel> fetchBySubject(@PathVariable String subjectId,
@@ -201,6 +185,11 @@ public class DocumentController extends BaseController {
                 .collect(Collectors.toList());
     }
 
+    private SubjectBindingModel getSubject(@PathVariable String subjectId, String username) {
+        SubjectServiceModel subjectServiceModel = this.subjectService.findSubjectsById(subjectId, username);
+        return this.modelMapper.map(subjectServiceModel, SubjectBindingModel.class);
+    }
+
     private String getPrincipalName(Principal principal) throws AuthenticationException {
         if (principal == null) {
             throw new AuthenticationException();
@@ -217,5 +206,20 @@ public class DocumentController extends BaseController {
     private void AddDocumentTypesModel(ModelAndView modelAndView) {
         List<DocumentTypeServiceModel> documentTypes = this.getAllDocumentTypes();
         modelAndView.addObject("documentTypes", documentTypes);
+    }
+
+    private DocumentBindingModel getDocumentModel(@PathVariable String id, Principal principal) throws AuthenticationException {
+        DocumentBindingModel model;
+        String userName = getPrincipalName(principal);
+
+        DocumentServiceModel documentServiceModel = this.documentService.findDocumentsById(id, userName);
+        model = this.modelMapper.map(documentServiceModel, DocumentBindingModel.class);
+        return model;
+    }
+
+    private void prepareErrorsModelAndView(@Valid @ModelAttribute(name = "model") DocumentBindingModel model, BindingResult bindingResult, ModelAndView modelAndView) {
+        modelAndView.addObject("model", model);
+        this.AddDocumentTypesModel(modelAndView);
+        this.addGlobalErrorsToModelAndView("globalErrors", modelAndView, bindingResult);
     }
 }

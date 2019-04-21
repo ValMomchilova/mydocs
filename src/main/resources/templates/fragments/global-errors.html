@@ -1,0 +1,9 @@
+<th:block th:fragment>
+<th:block th:if="${globalErrors!=null}">
+    <th:block th:each="e : ${globalErrors}">
+        <div class="text-danger"
+             th:text="${e}">
+        </div>
+    </th:block>
+</th:block>
+</th:block>

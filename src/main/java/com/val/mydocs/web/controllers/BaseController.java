@@ -1,6 +1,9 @@
 package com.val.mydocs.web.controllers;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.stream.Collectors;
 
 public abstract class BaseController {
 
@@ -16,5 +19,10 @@ public abstract class BaseController {
 
     protected ModelAndView redirect(String url){
         return this.view("redirect:" + url);
+    }
+
+    protected void addGlobalErrorsToModelAndView(String errorsObjectName, ModelAndView modelAndView, BindingResult bindingResult){
+        modelAndView.addObject(errorsObjectName, bindingResult.getGlobalErrors()
+                .stream().map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
     }
 }

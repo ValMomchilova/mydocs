@@ -52,10 +52,8 @@ public class UserController extends BaseController{
                                      BindingResult bindingResult,
                                      ModelAndView modelAndView) {
         if (bindingResult.hasErrors()) {
-            modelAndView.addObject("globalErrors", bindingResult.getGlobalErrors()
-                    .stream().map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
+            this.addGlobalErrorsToModelAndView("globalErrors", modelAndView, bindingResult);
 
-            //modelAndView.addObject("error", err.)
             return this.view("register", modelAndView);
         }
         this.userService.register(this.modelMapper.map(user, UserServiceModel.class));

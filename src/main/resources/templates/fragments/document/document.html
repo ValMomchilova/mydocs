@@ -51,6 +51,7 @@
                  th:each="error : ${#fields.errors('expiredDate')}"
                  th:text="${error}">
             </div>
+            <th:block th:include="~{fragments/global-errors}"></th:block>
         </small>
     </div>
     <div class="form-group">

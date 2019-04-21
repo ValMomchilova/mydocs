@@ -58,13 +58,7 @@
                              th:each="error : ${#fields.errors('confirmPassword')}"
                              th:text="${error}">
                         </div>
-                        <th:block th:if="${globalErrors!=null}">
-                            <th:block th:each="e : ${globalErrors}">
-                                <div class="text-danger"
-                                     th:text="${e}">
-                                </div>
-                            </th:block>
-                        </th:block>
+                        <th:block th:include="~{fragments/global-errors}"></th:block>
                     </small>
                 </div>
                 <button id="btnSubmit" type="submit" class="btn btn-primary md-background">Register</button>
