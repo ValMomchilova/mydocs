@@ -2,6 +2,7 @@ package com.val.mydocs.serivce;
 
 import com.val.mydocs.domain.entities.DocumentType;
 import com.val.mydocs.domain.models.service.DocumentTypeServiceModel;
+import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.repository.DocumentTypeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,14 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
 
     @Override
-    public DocumentTypeServiceModel addDocumentType(DocumentTypeServiceModel subjectTypeServiceModel) {
+    public DocumentTypeServiceModel addDocumentType(DocumentTypeServiceModel subjectTypeServiceModel) throws UniqueFieldException {
         DocumentType subjectType = this.modelMapper.map(subjectTypeServiceModel, DocumentType.class);
         DocumentType subjectSaved = saveDocumentType(subjectType);
         return this.modelMapper.map(subjectSaved, DocumentTypeServiceModel.class);
     }
 
     @Override
-    public DocumentTypeServiceModel editDocumentType(DocumentTypeServiceModel subjectTypeServiceModel) {
+    public DocumentTypeServiceModel editDocumentType(DocumentTypeServiceModel subjectTypeServiceModel) throws UniqueFieldException {
         DocumentType subjectType = this.modelMapper.map(subjectTypeServiceModel, DocumentType.class);
         DocumentType subjectSaved = saveDocumentType(subjectType);
         return this.modelMapper.map(subjectSaved, DocumentTypeServiceModel.class);
@@ -58,7 +59,16 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         return this.modelMapper.map(subjectType, DocumentTypeServiceModel.class);
     }
 
-    private DocumentType saveDocumentType(DocumentType subjectType) {
-        return this.subjectTypeRepository.save(subjectType);
+    private DocumentType saveDocumentType(DocumentType documentType) throws UniqueFieldException {
+        this.checkUniqueness(documentType);
+        return this.subjectTypeRepository.save(documentType);
+    }
+
+    private void checkUniqueness(DocumentType documentType) throws UniqueFieldException {
+        DocumentType same = this.subjectTypeRepository
+                .findDocumentTypeByTitle(documentType.getTitle()).orElse(null);
+        if (same != null){
+            throw new UniqueFieldException(this.getClass().getName(), "title");
+        }
     }
 }

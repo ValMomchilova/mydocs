@@ -3,6 +3,7 @@ package com.val.mydocs.serivce;
 import com.val.mydocs.domain.entities.User;
 import com.val.mydocs.domain.entities.UserRole;
 import com.val.mydocs.domain.models.service.UserServiceModel;
+import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean register(UserServiceModel userServiceModel) {
+    public boolean register(UserServiceModel userServiceModel) throws UniqueFieldException {
         User user = this.modelMapper.map(userServiceModel, User.class);
+
+        this.checkUniqueness(user);
+
         user.setPassword(this.bCriptPasswordEncoder.encode(user.getPassword()));
         //
         Set<UserRole> userRoles = this.prepareUserRoles();
@@ -140,6 +144,18 @@ public class UserServiceImpl implements UserService {
         }   catch(Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private void checkUniqueness(User user) throws UniqueFieldException {
+        User userWithTheSameUsername = this.userRepository.findUserByUsername(user.getUsername()).orElse(null);
+        if (userWithTheSameUsername != null){
+            throw new UniqueFieldException(this.getClass().getName(), "username");
+        }
+
+        User userWithTheSameEmail = this.userRepository.findUserByEmail(user.getEmail()).orElse(null);
+        if (userWithTheSameEmail != null){
+            throw new UniqueFieldException(this.getClass().getName(), "email");
         }
     }
 }

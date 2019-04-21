@@ -2,7 +2,7 @@
     <div class="button-holder d-flex justify-content-center">
         <button type="submit" onClick="return confSubmit(this.form);" class="btn btn-danger">Delete</button>
     </div>
-    <input type="hidden" id="delete-message" th:value="#{delete.item.messsage}"></input>
+    <input type="hidden" id="delete-message" th:value="#{delete.item.message}"></input>
     <script th:inline="javascript">
         function confSubmit(form) {
             let message = $('#delete-message').val()

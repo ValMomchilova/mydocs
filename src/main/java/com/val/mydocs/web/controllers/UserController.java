@@ -5,22 +5,24 @@ import com.val.mydocs.domain.models.binding.UserEditBindingModel;
 import com.val.mydocs.domain.models.binding.UserRoleBindingModel;
 import com.val.mydocs.domain.models.service.UserServiceModel;
 import com.val.mydocs.domain.models.view.UsersListViewModel;
+import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.UserRoleService;
 import com.val.mydocs.serivce.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-public class UserController extends BaseController{
+public class UserController extends BaseController {
     private final UserService userService;
     private final UserRoleService userRoleService;
     private final ModelMapper modelMapper;
@@ -33,8 +35,8 @@ public class UserController extends BaseController{
     }
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(required = false) String error, ModelAndView modelAndView){
-        if(error != null){
+    public ModelAndView login(@RequestParam(required = false) String error, ModelAndView modelAndView) {
+        if (error != null) {
             System.out.println(error);
         }
 
@@ -42,31 +44,40 @@ public class UserController extends BaseController{
     }
 
     @GetMapping("/register")
-    public ModelAndView register(@ModelAttribute(name = "user") UserBindingModel user, ModelAndView modelAndView){
+    public ModelAndView register(@ModelAttribute(name = "user") UserBindingModel user, ModelAndView modelAndView) {
         return this.view("register");
     }
 
     @PostMapping("/register")
-    //Order of parameters is important!
+    //Order of the parameters is important!
     public ModelAndView registerPost(@Valid @ModelAttribute(name = "user") UserBindingModel user,
                                      BindingResult bindingResult,
-                                     ModelAndView modelAndView) {
+                                     ModelAndView modelAndView,
+                                     HttpServletRequest request) throws UniqueFieldException {
         if (bindingResult.hasErrors()) {
             this.addGlobalErrorsToModelAndView("globalErrors", modelAndView, bindingResult);
 
             return this.view("register", modelAndView);
         }
-        this.userService.register(this.modelMapper.map(user, UserServiceModel.class));
+
+        try {
+            this.userService.register(this.modelMapper.map(user, UserServiceModel.class));
+        } catch (UniqueFieldException e) {
+            e.printStackTrace();
+
+            this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+
+            return this.view("register", modelAndView);
+        }
         return this.redirect("/login");
     }
 
-    //@PreAuthorize(value = "hasRole('ADMIN')")
     @GetMapping("/users/show")
-    public ModelAndView showUsers(ModelAndView modelAndView, Principal principal){
+    public ModelAndView showUsers(ModelAndView modelAndView, Principal principal) {
         List<UsersListViewModel> users = this.userService.findAllUsersNotUsername(principal.getName())
                 .stream().map(v -> this.modelMapper.map(v, UsersListViewModel.class))
                 .collect(Collectors.toList());
-        modelAndView.addObject("users",users);
+        modelAndView.addObject("users", users);
         return this.view("users-list", modelAndView);
     }
 
@@ -106,7 +117,7 @@ public class UserController extends BaseController{
         modelAndView.addObject("roles", roles);
     }
 
-    private ModelAndView prepareUserModelAndView(String id, ModelAndView modelAndView){
+    private ModelAndView prepareUserModelAndView(String id, ModelAndView modelAndView) {
         UserServiceModel userServiceModel = this.userService.findUserByID(id);
         UserEditBindingModel userModel = this.modelMapper.map(userServiceModel, UserEditBindingModel.class);
         userModel.setRolesIdsByRoles();

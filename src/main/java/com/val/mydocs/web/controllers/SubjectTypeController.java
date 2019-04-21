@@ -4,6 +4,7 @@ import com.val.mydocs.domain.models.binding.SubjectTypeBindingModel;
 import com.val.mydocs.domain.models.service.SubjectTypeServiceModel;
 import com.val.mydocs.domain.models.view.SubjectTypeAllViewModel;
 import com.val.mydocs.domain.models.view.SubjectTypeDetailsViewModel;
+import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.CloudinaryService;
 import com.val.mydocs.serivce.SubjectTypeService;
 import org.modelmapper.ModelMapper;
@@ -41,7 +42,6 @@ public class SubjectTypeController extends BaseController {
     }
 
     @GetMapping("/subject-types/add")
-    //@PreAuthorize("hasAuthority('MODERATOR')")
     public ModelAndView addSubjectType(@ModelAttribute(name = "model") SubjectTypeBindingModel model,
                                        ModelAndView modelAndView) {
         modelAndView.addObject("model", model);
@@ -49,11 +49,10 @@ public class SubjectTypeController extends BaseController {
     }
 
     @PostMapping("/subject-types/add")
-    //@PreAuthorize("hasAuthority('MODERATOR')")
     public ModelAndView addSubjectTypeConfirm(@Valid @ModelAttribute(name = "model") SubjectTypeBindingModel model,
                                               BindingResult bindingResult,
                                               ModelAndView modelAndView,
-                                              HttpServletRequest request) {
+                                              HttpServletRequest request) throws UniqueFieldException {
         String view = "subjecttype/add-subject-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);
@@ -68,7 +67,13 @@ public class SubjectTypeController extends BaseController {
         SubjectTypeServiceModel subjectTypeServiceModel = this.modelMapper.map(model, SubjectTypeServiceModel.class);
         subjectTypeServiceModel.setImageUrl(imageUrl);
 
-        this.subjectTypeService.addSubjectType(subjectTypeServiceModel);
+        try {
+            this.subjectTypeService.addSubjectType(subjectTypeServiceModel);
+        } catch (UniqueFieldException e) {
+            e.printStackTrace();
+            this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            return this.view(view, modelAndView);
+        }
 
         return this.redirect("/subject-types/all");
     }
@@ -96,8 +101,8 @@ public class SubjectTypeController extends BaseController {
 
     @GetMapping("/subject-types/edit/{id}")
     public ModelAndView editSubjectTypes(@PathVariable String id,
-                                    @ModelAttribute(name = "model") SubjectTypeBindingModel model,
-                                    ModelAndView modelAndView) {
+                                         @ModelAttribute(name = "model") SubjectTypeBindingModel model,
+                                         ModelAndView modelAndView) {
         SubjectTypeServiceModel subjectTypeServiceModel = this.subjectTypeService.findSubjectTypesById(id);
         model = this.modelMapper.map(subjectTypeServiceModel, SubjectTypeBindingModel.class);
 
@@ -108,10 +113,10 @@ public class SubjectTypeController extends BaseController {
 
     @PostMapping("/subject-types/edit/{id}")
     public ModelAndView editSubjectTypesConfirm(@PathVariable(name = "id") String id,
-                                           @Valid @ModelAttribute(name = "model") SubjectTypeBindingModel model,
-                                           BindingResult bindingResult,
-                                           ModelAndView modelAndView,
-                                           HttpServletRequest request) {
+                                                @Valid @ModelAttribute(name = "model") SubjectTypeBindingModel model,
+                                                BindingResult bindingResult,
+                                                ModelAndView modelAndView,
+                                                HttpServletRequest request) throws UniqueFieldException {
         String view = "subjecttype/edit-subject-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);
@@ -129,15 +134,21 @@ public class SubjectTypeController extends BaseController {
             subjectTypeServiceModel.setImageUrl(imageUrl);
         }
 
-        this.subjectTypeService.editSubjectType(subjectTypeServiceModel);
+        try {
+            this.subjectTypeService.editSubjectType(subjectTypeServiceModel);
+        } catch (UniqueFieldException e) {
+            e.printStackTrace();
+            this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            return this.view(view, modelAndView);
+        }
 
         return super.redirect("/subject-types/details/" + id);
     }
 
     @GetMapping("subject-types/delete/{id}")
     public ModelAndView deleteSubjectType(@PathVariable String id,
-                                    @ModelAttribute(name = "subjectType") SubjectTypeBindingModel subjectType,
-                                    ModelAndView modelAndView) {
+                                          @ModelAttribute(name = "subjectType") SubjectTypeBindingModel subjectType,
+                                          ModelAndView modelAndView) {
         SubjectTypeServiceModel subjectTypeServiceModel = this.subjectTypeService.findSubjectTypesById(id);
         subjectType = this.modelMapper.map(subjectTypeServiceModel, SubjectTypeBindingModel.class);
 

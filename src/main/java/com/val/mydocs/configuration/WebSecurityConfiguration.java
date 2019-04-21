@@ -35,9 +35,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/")
        ;
-
-
-
     }
 
     private CsrfTokenRepository csrfTokenRepository() {

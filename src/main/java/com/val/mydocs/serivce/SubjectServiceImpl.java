@@ -5,6 +5,7 @@ import com.val.mydocs.domain.entities.SubjectType;
 import com.val.mydocs.domain.entities.User;
 import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.service.UserServiceModel;
+import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.repository.SubjectRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public SubjectServiceModel addSubject(SubjectServiceModel subjectServiceModel, String username) {
+    public SubjectServiceModel addSubject(SubjectServiceModel subjectServiceModel, String username) throws UniqueFieldException {
         UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
         subjectServiceModel.setUser(userServiceModel);
         Subject subject = this.modelMapper.map(subjectServiceModel, Subject.class);
@@ -80,7 +81,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public SubjectServiceModel editSubject(SubjectServiceModel subjectServiceModel, String username) {
+    public SubjectServiceModel editSubject(SubjectServiceModel subjectServiceModel, String username) throws UniqueFieldException {
         UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
         User user = this.modelMapper.map(userServiceModel, User.class);
         Subject subject = this.subjectRepository.findSubjectByIdAndAndUser(subjectServiceModel.getId(), user);
@@ -94,7 +95,15 @@ public class SubjectServiceImpl implements SubjectService {
         return this.modelMapper.map(subjectSaved, SubjectServiceModel.class);
     }
 
-    private Subject saveSubject(Subject subject) {
+    private Subject saveSubject(Subject subject) throws UniqueFieldException {
+        this.checkUniqueness(subject);
         return this.subjectRepository.save(subject);
+    }
+
+    private void checkUniqueness(Subject subject) throws UniqueFieldException {
+        Subject same = this.subjectRepository.findSubjectByName(subject.getName());
+        if (same != null){
+            throw new UniqueFieldException(this.getClass().getName(), "name");
+        }
     }
 }

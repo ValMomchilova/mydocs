@@ -4,6 +4,7 @@ import com.val.mydocs.domain.models.binding.DocumentTypeBindingModel;
 import com.val.mydocs.domain.models.service.DocumentTypeServiceModel;
 import com.val.mydocs.domain.models.view.DocumentTypeAllViewModel;
 import com.val.mydocs.domain.models.view.DocumentTypeDetailsViewModel;
+import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.DocumentTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,15 +34,16 @@ public class DocumentTypeController extends BaseController {
 
     @GetMapping("/document-types/add")
     public ModelAndView addDocumentType(@ModelAttribute(name = "model") DocumentTypeBindingModel model,
-                                       ModelAndView modelAndView) {
+                                        ModelAndView modelAndView) {
         modelAndView.addObject("model", model);
         return this.view("documenttype/add-document-type");
     }
 
     @PostMapping("/document-types/add")
     public ModelAndView addDocumentTypeConfirm(@Valid @ModelAttribute(name = "model") DocumentTypeBindingModel model,
-                                              BindingResult bindingResult,
-                                              ModelAndView modelAndView) {
+                                               BindingResult bindingResult,
+                                               ModelAndView modelAndView,
+                                               HttpServletRequest request) throws UniqueFieldException {
         String view = "documenttype/add-document-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);
@@ -48,7 +51,13 @@ public class DocumentTypeController extends BaseController {
         }
 
         DocumentTypeServiceModel documentTypeServiceModel = this.modelMapper.map(model, DocumentTypeServiceModel.class);
-        this.documentTypeService.addDocumentType(documentTypeServiceModel);
+        try {
+            this.documentTypeService.addDocumentType(documentTypeServiceModel);
+        } catch (UniqueFieldException e) {
+            e.printStackTrace();
+            this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            return this.view(view, modelAndView);
+        }
 
         return this.redirect("/document-types/all");
     }
@@ -76,8 +85,8 @@ public class DocumentTypeController extends BaseController {
 
     @GetMapping("/document-types/edit/{id}")
     public ModelAndView editDocumentTypes(@PathVariable String id,
-                                    @ModelAttribute(name = "model") DocumentTypeBindingModel model,
-                                    ModelAndView modelAndView) {
+                                          @ModelAttribute(name = "model") DocumentTypeBindingModel model,
+                                          ModelAndView modelAndView) {
         DocumentTypeServiceModel documentTypeServiceModel = this.documentTypeService.findDocumentTypesById(id);
         model = this.modelMapper.map(documentTypeServiceModel, DocumentTypeBindingModel.class);
 
@@ -88,9 +97,10 @@ public class DocumentTypeController extends BaseController {
 
     @PostMapping("/document-types/edit/{id}")
     public ModelAndView editDocumentTypesConfirm(@PathVariable(name = "id") String id,
-                                           @Valid @ModelAttribute(name = "model") DocumentTypeBindingModel model,
-                                           BindingResult bindingResult,
-                                           ModelAndView modelAndView) {
+                                                 @Valid @ModelAttribute(name = "model") DocumentTypeBindingModel model,
+                                                 BindingResult bindingResult,
+                                                 ModelAndView modelAndView,
+                                                 HttpServletRequest request) throws UniqueFieldException {
         String view = "documenttype/edit-document-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);
@@ -98,15 +108,21 @@ public class DocumentTypeController extends BaseController {
         }
 
         DocumentTypeServiceModel documentTypeServiceModel = this.modelMapper.map(model, DocumentTypeServiceModel.class);
-        this.documentTypeService.editDocumentType(documentTypeServiceModel);
+        try {
+            this.documentTypeService.editDocumentType(documentTypeServiceModel);
+        } catch (UniqueFieldException e) {
+            e.printStackTrace();
+            this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            return this.view(view, modelAndView);
+        }
 
         return super.redirect("/document-types/details/" + id);
     }
 
     @GetMapping("document-types/delete/{id}")
     public ModelAndView deleteDocumentType(@PathVariable String id,
-                                    @ModelAttribute(name = "documentType") DocumentTypeBindingModel documentType,
-                                    ModelAndView modelAndView) {
+                                           @ModelAttribute(name = "documentType") DocumentTypeBindingModel documentType,
+                                           ModelAndView modelAndView) {
         DocumentTypeServiceModel documentTypeServiceModel = this.documentTypeService.findDocumentTypesById(id);
         documentType = this.modelMapper.map(documentTypeServiceModel, DocumentTypeBindingModel.class);
 

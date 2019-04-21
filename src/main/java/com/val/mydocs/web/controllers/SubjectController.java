@@ -5,6 +5,7 @@ import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.service.SubjectTypeServiceModel;
 import com.val.mydocs.domain.models.view.SubjectAllViewModel;
 import com.val.mydocs.domain.models.view.SubjectDetailsViewModel;
+import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.SubjectService;
 import com.val.mydocs.serivce.SubjectTypeService;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -55,7 +57,8 @@ public class SubjectController extends BaseController {
     public ModelAndView addSubjectConfirm(@Valid @ModelAttribute(name = "model") SubjectBindingModel model,
                                           BindingResult bindingResult,
                                           ModelAndView modelAndView,
-                                          Principal principal) throws AuthenticationException {
+                                          Principal principal,
+                                          HttpServletRequest request) throws AuthenticationException, UniqueFieldException {
 
         String userName = getPrincipalName(principal);
         String view = "subject/add-subject";
@@ -65,7 +68,13 @@ public class SubjectController extends BaseController {
             return this.view(view, modelAndView);
         }
         SubjectServiceModel subjectServiceModel = this.modelMapper.map(model, SubjectServiceModel.class);
-        this.subjectService.addSubject(subjectServiceModel, userName);
+        try{
+            this.subjectService.addSubject(subjectServiceModel, userName);
+        } catch (UniqueFieldException e) {
+            e.printStackTrace();
+            this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            return this.view(view, modelAndView);
+        }
 
         return this.redirect("/subject/all");
     }
@@ -91,8 +100,6 @@ public class SubjectController extends BaseController {
         String username = getPrincipalName(principal);
 
         SubjectServiceModel subjectServiceModel = this.subjectService.findSubjectsById(id, username);
-        //subjectServiceModel.setDescription(escapeHtml(subjectServiceModel.getDescription()));
-        //subjectServiceModel.setDescription(subjectServiceModel.getDescription().replaceAll("\n", "</br>"));
         modelAndView.addObject("model",
                 this.modelMapper.map(subjectServiceModel, SubjectDetailsViewModel.class));
 
@@ -120,7 +127,8 @@ public class SubjectController extends BaseController {
                                             @Valid @ModelAttribute(name = "model") SubjectBindingModel model,
                                             BindingResult bindingResult,
                                             ModelAndView modelAndView,
-                                            Principal principal) throws AuthenticationException {
+                                            Principal principal,
+                                            HttpServletRequest request) throws AuthenticationException, UniqueFieldException {
         String userName = getPrincipalName(principal);
 
         String view = "subject/edit-subject";
@@ -131,7 +139,14 @@ public class SubjectController extends BaseController {
         }
 
         SubjectServiceModel subjectServiceModel = this.modelMapper.map(model, SubjectServiceModel.class);
-        this.subjectService.editSubject(subjectServiceModel, userName);
+        try{
+            this.subjectService.editSubject(subjectServiceModel, userName);
+        } catch (UniqueFieldException e) {
+            e.printStackTrace();
+            this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            return this.view(view, modelAndView);
+        }
+
 
         return super.redirect("/subject/details/" + id);
     }
