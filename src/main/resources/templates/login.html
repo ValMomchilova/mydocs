@@ -22,6 +22,12 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                 </div>
+
+                <small id="loginHelp" class="form-text text-muted">
+                    <div th:if="${param.error!= null}">
+                        <p  class="text-danger mb-3" th:text="#{user.message.badCredentials}"></p>
+                    </div>
+                </small>
                 <button id="btnSubmit" type="submit" class="btn btn-primary md-background">Login</button>
             </form>
         </div>
