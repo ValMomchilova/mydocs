@@ -7,6 +7,7 @@ import com.val.mydocs.domain.models.service.DocumentTypeServiceModel;
 import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.view.DocumentAllViewModel;
 import com.val.mydocs.domain.models.view.DocumentDetailsViewModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.serivce.DocumentService;
 import com.val.mydocs.serivce.DocumentTypeService;
 import com.val.mydocs.serivce.SubjectService;
@@ -55,7 +56,7 @@ public class DocumentController extends BaseController {
     public ModelAndView addDocumentConfirm(@PathVariable String subjectId, @Valid @ModelAttribute(name = "model") DocumentBindingModel model,
                                           BindingResult bindingResult,
                                           ModelAndView modelAndView,
-                                          Principal principal) throws AuthenticationException {
+                                          Principal principal) throws AuthenticationException, ModelValidationException {
 
         String username = getPrincipalName(principal);
         SubjectBindingModel subjectBindingModel = getSubject(subjectId, username);
@@ -104,7 +105,7 @@ public class DocumentController extends BaseController {
                                             @Valid @ModelAttribute(name = "model") DocumentBindingModel model,
                                             BindingResult bindingResult,
                                             ModelAndView modelAndView,
-                                            Principal principal) throws AuthenticationException {
+                                            Principal principal) throws AuthenticationException, ModelValidationException {
         String userName = getPrincipalName(principal);
 
         String view = "document/edit-document";
@@ -158,7 +159,7 @@ public class DocumentController extends BaseController {
                                              @ModelAttribute(name = "model") DocumentBindingModel model,
                                              BindingResult bindingResult,
                                              ModelAndView modelAndView,
-                                             Principal principal) throws AuthenticationException {
+                                             Principal principal) throws AuthenticationException, ModelValidationException {
         String userName = getPrincipalName(principal);
 
         DocumentServiceModel documentServiceModel = this.modelMapper.map(model, DocumentServiceModel.class);

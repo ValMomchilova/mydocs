@@ -5,8 +5,10 @@ import com.val.mydocs.domain.entities.SubjectType;
 import com.val.mydocs.domain.entities.User;
 import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.service.UserServiceModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.repository.SubjectRepository;
+import com.val.mydocs.validation.SubjectValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +22,21 @@ public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final SubjectValidationService subjectValidationService;
 
     @Autowired
-    public SubjectServiceImpl(SubjectRepository subjectRepository, UserService userService, ModelMapper modelMapper) {
+    public SubjectServiceImpl(SubjectRepository subjectRepository,
+                              UserService userService,
+                              ModelMapper modelMapper,
+                              SubjectValidationService subjectValidationService) {
         this.subjectRepository = subjectRepository;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.subjectValidationService = subjectValidationService;
     }
 
     @Override
-    public SubjectServiceModel addSubject(SubjectServiceModel subjectServiceModel, String username) throws UniqueFieldException {
+    public SubjectServiceModel addSubject(SubjectServiceModel subjectServiceModel, String username) throws UniqueFieldException, ModelValidationException {
         UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
         subjectServiceModel.setUser(userServiceModel);
         Subject subject = this.modelMapper.map(subjectServiceModel, Subject.class);
@@ -81,7 +88,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public SubjectServiceModel editSubject(SubjectServiceModel subjectServiceModel, String username) throws UniqueFieldException {
+    public SubjectServiceModel editSubject(SubjectServiceModel subjectServiceModel, String username) throws UniqueFieldException, ModelValidationException {
         UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
         User user = this.modelMapper.map(userServiceModel, User.class);
         Subject subject = this.subjectRepository.findSubjectByIdAndAndUser(subjectServiceModel.getId(), user);
@@ -95,14 +102,17 @@ public class SubjectServiceImpl implements SubjectService {
         return this.modelMapper.map(subjectSaved, SubjectServiceModel.class);
     }
 
-    private Subject saveSubject(Subject subject) throws UniqueFieldException {
+    private Subject saveSubject(Subject subject) throws UniqueFieldException, ModelValidationException {
+        if (!this.subjectValidationService.isValid(subject)){
+            throw new ModelValidationException(subject.getClass().getName(), subject);
+        }
         this.checkUniqueness(subject);
         return this.subjectRepository.save(subject);
     }
 
     private void checkUniqueness(Subject subject) throws UniqueFieldException {
         Subject same = this.subjectRepository.findSubjectByName(subject.getName());
-        if (same != null){
+        if (same != null && !same.getId().equals(subject.getId())){
             throw new UniqueFieldException(this.getClass().getName(), "name");
         }
     }

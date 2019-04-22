@@ -51,7 +51,8 @@ public class DocumentBindingModel {
 
     @NotEmpty
     @NotNull
-    @Length(min = 1, max = 30)
+    @Length(max = 30)
+    @SafeHtml()
     public String getTitle() {
         return title;
     }

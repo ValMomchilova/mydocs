@@ -4,6 +4,7 @@ import com.val.mydocs.domain.models.binding.SubjectTypeBindingModel;
 import com.val.mydocs.domain.models.service.SubjectTypeServiceModel;
 import com.val.mydocs.domain.models.view.SubjectTypeAllViewModel;
 import com.val.mydocs.domain.models.view.SubjectTypeDetailsViewModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.CloudinaryService;
 import com.val.mydocs.serivce.SubjectTypeService;
@@ -52,7 +53,7 @@ public class SubjectTypeController extends BaseController {
     public ModelAndView addSubjectTypeConfirm(@Valid @ModelAttribute(name = "model") SubjectTypeBindingModel model,
                                               BindingResult bindingResult,
                                               ModelAndView modelAndView,
-                                              HttpServletRequest request) throws UniqueFieldException {
+                                              HttpServletRequest request) throws ModelValidationException {
         String view = "subjecttype/add-subject-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);
@@ -116,7 +117,7 @@ public class SubjectTypeController extends BaseController {
                                                 @Valid @ModelAttribute(name = "model") SubjectTypeBindingModel model,
                                                 BindingResult bindingResult,
                                                 ModelAndView modelAndView,
-                                                HttpServletRequest request) throws UniqueFieldException {
+                                                HttpServletRequest request) throws ModelValidationException {
         String view = "subjecttype/edit-subject-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);

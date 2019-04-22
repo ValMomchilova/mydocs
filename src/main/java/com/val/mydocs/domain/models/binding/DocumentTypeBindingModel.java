@@ -2,6 +2,9 @@ package com.val.mydocs.domain.models.binding;
 
 import org.hibernate.validator.constraints.SafeHtml;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class DocumentTypeBindingModel {
     private String id;
     private String title;
@@ -18,6 +21,8 @@ public class DocumentTypeBindingModel {
         this.id = id;
     }
 
+    @NotNull
+    @NotEmpty
     @SafeHtml()
     public String getTitle() {
         return title;

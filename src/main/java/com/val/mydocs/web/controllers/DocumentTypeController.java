@@ -4,6 +4,7 @@ import com.val.mydocs.domain.models.binding.DocumentTypeBindingModel;
 import com.val.mydocs.domain.models.service.DocumentTypeServiceModel;
 import com.val.mydocs.domain.models.view.DocumentTypeAllViewModel;
 import com.val.mydocs.domain.models.view.DocumentTypeDetailsViewModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.DocumentTypeService;
 import org.modelmapper.ModelMapper;
@@ -43,7 +44,7 @@ public class DocumentTypeController extends BaseController {
     public ModelAndView addDocumentTypeConfirm(@Valid @ModelAttribute(name = "model") DocumentTypeBindingModel model,
                                                BindingResult bindingResult,
                                                ModelAndView modelAndView,
-                                               HttpServletRequest request) throws UniqueFieldException {
+                                               HttpServletRequest request) throws ModelValidationException {
         String view = "documenttype/add-document-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);
@@ -100,7 +101,7 @@ public class DocumentTypeController extends BaseController {
                                                  @Valid @ModelAttribute(name = "model") DocumentTypeBindingModel model,
                                                  BindingResult bindingResult,
                                                  ModelAndView modelAndView,
-                                                 HttpServletRequest request) throws UniqueFieldException {
+                                                 HttpServletRequest request) throws ModelValidationException {
         String view = "documenttype/edit-document-type";
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("model", model);

@@ -5,6 +5,7 @@ import com.val.mydocs.domain.models.binding.UserEditBindingModel;
 import com.val.mydocs.domain.models.binding.UserRoleBindingModel;
 import com.val.mydocs.domain.models.service.UserServiceModel;
 import com.val.mydocs.domain.models.view.UsersListViewModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.UserRoleService;
 import com.val.mydocs.serivce.UserService;
@@ -53,7 +54,7 @@ public class UserController extends BaseController {
     public ModelAndView registerPost(@Valid @ModelAttribute(name = "user") UserBindingModel user,
                                      BindingResult bindingResult,
                                      ModelAndView modelAndView,
-                                     HttpServletRequest request) throws UniqueFieldException {
+                                     HttpServletRequest request) throws ModelValidationException {
         if (bindingResult.hasErrors()) {
             this.addGlobalErrorsToModelAndView("globalErrors", modelAndView, bindingResult);
 

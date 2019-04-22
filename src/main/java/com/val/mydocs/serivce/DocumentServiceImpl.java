@@ -7,14 +7,15 @@ import com.val.mydocs.domain.entities.User;
 import com.val.mydocs.domain.models.service.DocumentServiceModel;
 import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.service.UserServiceModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.repository.DocumentRepository;
+import com.val.mydocs.validation.DocumentValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.print.Doc;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,18 +26,20 @@ public class DocumentServiceImpl implements DocumentService {
     private final SubjectService subjectService;
     private final ModelMapper modelMapper;
     private final DateTimeService dateTimeService;
+    private final DocumentValidationService documentValidationService;
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, UserService userService, SubjectService subjectService, ModelMapper modelMapper, DateTimeService dateTimeService) {
+    public DocumentServiceImpl(DocumentRepository documentRepository, UserService userService, SubjectService subjectService, ModelMapper modelMapper, DateTimeService dateTimeService, DocumentValidationService documentValidationService) {
         this.documentRepository = documentRepository;
         this.userService = userService;
         this.subjectService = subjectService;
         this.modelMapper = modelMapper;
         this.dateTimeService = dateTimeService;
+        this.documentValidationService = documentValidationService;
     }
 
     @Override
-    public DocumentServiceModel addDocument(DocumentServiceModel documentServiceModel, String username) {
+    public DocumentServiceModel addDocument(DocumentServiceModel documentServiceModel, String username) throws ModelValidationException {
         UserServiceModel userServiceModel = this.userService.findUserByUserName(username);
         documentServiceModel.setUser(userServiceModel);
         Document document = this.modelMapper.map(documentServiceModel, Document.class);
@@ -76,7 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentServiceModel editDocument(DocumentServiceModel documentServiceModel, String username) {
+    public DocumentServiceModel editDocument(DocumentServiceModel documentServiceModel, String username) throws ModelValidationException {
         User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(documentServiceModel.getId(), user);
         if (document == null) {
@@ -107,7 +110,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     @Transactional
-    public DocumentServiceModel renewDocument(DocumentServiceModel documentServiceModel, String username) {
+    public DocumentServiceModel renewDocument(DocumentServiceModel documentServiceModel, String username) throws ModelValidationException {
         User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(documentServiceModel.getId(), user);
         if (document == null) {
@@ -133,7 +136,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     // at 12:00 AM every day
     @Scheduled(cron = "0 0 0 * * *")
-    public void AutoRenewDocuments() {
+    public void AutoRenewDocuments() throws ModelValidationException {
         System.out.println("schedule");
         List<Document> documentsToRenew = this.documentRepository
                 .findDocumentByRenewDateAndAutoRenewAndExpiredDateIsBefore(null,
@@ -146,7 +149,10 @@ public class DocumentServiceImpl implements DocumentService {
 
     }
 
-    private Document saveDocument(Document document) {
+    private Document saveDocument(Document document) throws ModelValidationException {
+        if (!this.documentValidationService.isValid(document)){
+            throw new ModelValidationException(document.getClass().getName(), document);
+        }
         return this.documentRepository.save(document);
     }
 

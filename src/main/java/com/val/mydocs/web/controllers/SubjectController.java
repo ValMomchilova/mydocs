@@ -5,6 +5,7 @@ import com.val.mydocs.domain.models.service.SubjectServiceModel;
 import com.val.mydocs.domain.models.service.SubjectTypeServiceModel;
 import com.val.mydocs.domain.models.view.SubjectAllViewModel;
 import com.val.mydocs.domain.models.view.SubjectDetailsViewModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.serivce.SubjectService;
 import com.val.mydocs.serivce.SubjectTypeService;
@@ -58,7 +59,7 @@ public class SubjectController extends BaseController {
                                           BindingResult bindingResult,
                                           ModelAndView modelAndView,
                                           Principal principal,
-                                          HttpServletRequest request) throws AuthenticationException, UniqueFieldException {
+                                          HttpServletRequest request) throws AuthenticationException, ModelValidationException {
 
         String userName = getPrincipalName(principal);
         String view = "subject/add-subject";
@@ -73,6 +74,7 @@ public class SubjectController extends BaseController {
         } catch (UniqueFieldException e) {
             e.printStackTrace();
             this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            this.AddSubjectTypesModel(modelAndView);
             return this.view(view, modelAndView);
         }
 
@@ -128,7 +130,7 @@ public class SubjectController extends BaseController {
                                             BindingResult bindingResult,
                                             ModelAndView modelAndView,
                                             Principal principal,
-                                            HttpServletRequest request) throws AuthenticationException, UniqueFieldException {
+                                            HttpServletRequest request) throws AuthenticationException, ModelValidationException {
         String userName = getPrincipalName(principal);
 
         String view = "subject/edit-subject";
@@ -139,11 +141,13 @@ public class SubjectController extends BaseController {
         }
 
         SubjectServiceModel subjectServiceModel = this.modelMapper.map(model, SubjectServiceModel.class);
+
         try{
             this.subjectService.editSubject(subjectServiceModel, userName);
         } catch (UniqueFieldException e) {
             e.printStackTrace();
             this.addErrorUniqueErrorToBindingResult(bindingResult, request, e);
+            this.AddSubjectTypesModel(modelAndView);
             return this.view(view, modelAndView);
         }
 

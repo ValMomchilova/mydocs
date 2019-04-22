@@ -45,7 +45,7 @@ public class Document extends BaseEntity {
         this.documentType = documentType;
     }
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 30)
     public String getTitle() {
         return title;
     }

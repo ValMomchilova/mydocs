@@ -3,8 +3,10 @@ package com.val.mydocs.serivce;
 import com.val.mydocs.domain.entities.User;
 import com.val.mydocs.domain.entities.UserRole;
 import com.val.mydocs.domain.models.service.UserServiceModel;
+import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.exceptions.UniqueFieldException;
 import com.val.mydocs.repository.UserRepository;
+import com.val.mydocs.validation.UserValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,16 +22,21 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCriptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRoleService userRoleService;
     private final ModelMapper modelMapper;
+    private final UserValidationService userValidationService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCriptPasswordEncoder, UserRoleService userRoleService, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository,
+                           BCryptPasswordEncoder bCriptPasswordEncoder,
+                           UserRoleService userRoleService,
+                           ModelMapper modelMapper, UserValidationService userValidationService) {
         this.userRepository = userRepository;
-        this.bCriptPasswordEncoder = bCriptPasswordEncoder;
+        this.bCryptPasswordEncoder = bCriptPasswordEncoder;
         this.userRoleService = userRoleService;
         this.modelMapper = modelMapper;
+        this.userValidationService = userValidationService;
     }
 
     @Override
@@ -40,12 +46,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean register(UserServiceModel userServiceModel) throws UniqueFieldException {
+    public boolean register(UserServiceModel userServiceModel) throws UniqueFieldException, ModelValidationException {
+        if (!this.userValidationService.isValid(userServiceModel)){
+            throw new ModelValidationException("User", userServiceModel);
+        }
+
         User user = this.modelMapper.map(userServiceModel, User.class);
 
         this.checkUniqueness(user);
 
-        user.setPassword(this.bCriptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         //
         Set<UserRole> userRoles = this.prepareUserRoles();
         if (userRoles.isEmpty()){
@@ -84,6 +94,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean saveUser(UserServiceModel userServiceModel) {
+        if (!this.userValidationService.isValid(userServiceModel)){
+            return false;
+        }
        User user = this.modelMapper.map(userServiceModel, User.class);
        return this.saveRepositoryUser(user);
     }
@@ -149,12 +162,12 @@ public class UserServiceImpl implements UserService {
 
     private void checkUniqueness(User user) throws UniqueFieldException {
         User userWithTheSameUsername = this.userRepository.findUserByUsername(user.getUsername()).orElse(null);
-        if (userWithTheSameUsername != null){
+        if (userWithTheSameUsername != null && !userWithTheSameUsername.getId().equals(user.getId())){
             throw new UniqueFieldException(this.getClass().getName(), "username");
         }
 
         User userWithTheSameEmail = this.userRepository.findUserByEmail(user.getEmail()).orElse(null);
-        if (userWithTheSameEmail != null){
+        if (userWithTheSameEmail != null && !userWithTheSameEmail.getId().equals(user.getId())){
             throw new UniqueFieldException(this.getClass().getName(), "email");
         }
     }
