@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
+    public static final String SUBJECT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE = "Subject is not found or not belongs to the user";
     private final SubjectRepository subjectRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
@@ -81,9 +82,8 @@ public class SubjectServiceImpl implements SubjectService {
         User user = this.modelMapper.map(userServiceModel, User.class);
         Subject subject = this.subjectRepository.findSubjectByIdAndAndUser(id, user);
         if (subject == null){
-            throw new IllegalArgumentException("Subject is not found or not belongs to the user");
+            throw new IllegalArgumentException(SUBJECT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE);
         }
-        //throws EmptyResultDataAccessException
         this.subjectRepository.deleteById(id);
     }
 
@@ -93,7 +93,7 @@ public class SubjectServiceImpl implements SubjectService {
         User user = this.modelMapper.map(userServiceModel, User.class);
         Subject subject = this.subjectRepository.findSubjectByIdAndAndUser(subjectServiceModel.getId(), user);
         if (subject == null){
-            throw new IllegalArgumentException("Subject is not found or not belongs to the user");
+            throw new IllegalArgumentException(SUBJECT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE);
         }
         subject.setSubjectType(this.modelMapper.map(subjectServiceModel.getSubjectType(), SubjectType.class));
         subject.setName(subjectServiceModel.getName());

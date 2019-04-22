@@ -38,13 +38,15 @@ public abstract class BaseController {
                 .stream().map(error -> error.getDefaultMessage()).collect(Collectors.toList()));
     }
 
-    protected void addErrorUniqueErrorToBindingResult(BindingResult bindingResult, HttpServletRequest request, UniqueFieldException e) {
+    protected void addErrorUniqueErrorToBindingResult(BindingResult bindingResult,
+                                                      HttpServletRequest request,
+                                                      UniqueFieldException e) {
         String message =  this.messageSource.getMessage("error.must.be.unique",
                 null,
                 RequestContextUtils.getLocale(request));
 
         String formattedMessage = MessageFormat.format(message, e.getFieldName());
-        bindingResult.addError(new FieldError("user",
+        bindingResult.addError(new FieldError(e.getEntityName(),
                 e.getFieldName(),
                 formattedMessage));
     }

@@ -5,10 +5,11 @@ import com.val.mydocs.exceptions.ModelValidationException;
 import com.val.mydocs.exceptions.UniqueFieldException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import javax.naming.ConfigurationException;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    boolean register(UserServiceModel userServiceModel) throws UniqueFieldException, ModelValidationException;
+    boolean register(UserServiceModel userServiceModel) throws UniqueFieldException, ModelValidationException, ConfigurationException;
 
     List<UserServiceModel> findAllUsers();
 

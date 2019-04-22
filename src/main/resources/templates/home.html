@@ -25,7 +25,7 @@
                                    value="all">
                             <label class="h4 custom-control-label" for="allRadio">All</label>
                         </div>
-                        <th:block th:each="subject : ${sbjects}" th:object="${subject}">
+                        <th:block th:each="subject : ${subjects}" th:object="${subject}">
                             <div class="custom-control custom-radio mt-2 ">
                                 <input type="radio" th:id="|*{name.toLowerCase()}Radio|" name="selection"
                                        class="custom-control-input"

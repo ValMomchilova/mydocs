@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.naming.ConfigurationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -54,7 +55,7 @@ public class UserController extends BaseController {
     public ModelAndView registerPost(@Valid @ModelAttribute(name = "user") UserBindingModel user,
                                      BindingResult bindingResult,
                                      ModelAndView modelAndView,
-                                     HttpServletRequest request) throws ModelValidationException {
+                                     HttpServletRequest request) throws ModelValidationException, ConfigurationException {
         if (bindingResult.hasErrors()) {
             this.addGlobalErrorsToModelAndView("globalErrors", modelAndView, bindingResult);
 

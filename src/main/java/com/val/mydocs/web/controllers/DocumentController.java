@@ -194,7 +194,6 @@ public class DocumentController extends BaseController {
     private String getPrincipalName(Principal principal) throws AuthenticationException {
         if (principal == null) {
             throw new AuthenticationException();
-            // to do: error
         }
         return principal.getName();
     }

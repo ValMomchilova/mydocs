@@ -42,7 +42,6 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public void deleteDocumentType(String id) {
-        //throws EmptyResultDataAccessException
        this.subjectTypeRepository.deleteById(id);
     }
 

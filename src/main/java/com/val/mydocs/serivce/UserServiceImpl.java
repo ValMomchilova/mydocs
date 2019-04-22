@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.ConfigurationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final static String USER_ROLES_ARE_NOT_SET =  "User roles are not set";
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRoleService userRoleService;
@@ -46,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean register(UserServiceModel userServiceModel) throws UniqueFieldException, ModelValidationException {
+    public boolean register(UserServiceModel userServiceModel) throws UniqueFieldException, ModelValidationException, ConfigurationException {
         if (!this.userValidationService.isValid(userServiceModel)){
             throw new ModelValidationException("User", userServiceModel);
         }
@@ -59,9 +62,7 @@ public class UserServiceImpl implements UserService {
         //
         Set<UserRole> userRoles = this.prepareUserRoles();
         if (userRoles.isEmpty()){
-            Exception e = new Exception("User roles are not set");
-            e.printStackTrace();
-            return false;
+           throw new ConfigurationException(USER_ROLES_ARE_NOT_SET);
         }
         user.setRoles(userRoles);
 

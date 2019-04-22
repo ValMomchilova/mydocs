@@ -46,7 +46,7 @@ public class HomeController extends BaseController {
         List<SubjectDetailsViewModel> subjectDetailsViewModels = subjectServiceModelList.stream()
                 .map(s -> this.modelMapper.map(s, SubjectDetailsViewModel.class))
                 .collect(Collectors.toList());
-        modelAndView.addObject("sbjects", subjectDetailsViewModels);
+        modelAndView.addObject("subjects", subjectDetailsViewModels);
 
         return this.view("home", modelAndView);
     }
