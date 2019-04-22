@@ -65,9 +65,9 @@ public class UserEditBindingModel {
     public void setRolesByRolesIds(){
         if (this.roleIds != null && this.roleIds.size() > 0){
             Set<UserRoleBindingModel> roles = new HashSet<>();
-            for (String capitalId : this.roleIds) {
+            for (String roleId : this.roleIds) {
                 UserRoleBindingModel role = new UserRoleBindingModel();
-                role.setId(capitalId);
+                role.setId(roleId);
                 roles.add(role);
             }
 

@@ -15,28 +15,35 @@
                 <ul class="navbar-nav mr-auto">
                     <th:block sec:authorize="isAnonymous()">
                         <li class="nav-item active">
-                            <a class="nav-link text-white" th:href="@{/register}">Register <span
-                                    class="sr-only">(current)</span></a>
+                            <a class="nav-link text-white" th:href="@{/register}">
+                                <span th:text="#{navbar.register}"></span>
+                                <span class="sr-only">(current)</span></a>
                         <li class="nav-item active">
-                            <a class="nav-link text-white" th:href="@{/login}">Login <span
-                                    class="sr-only">(current)</span></a>
+                            <a class="nav-link text-white" th:href="@{/login}">
+                                <span th:text="#{navbar.login}"></span>
+                                <span class="sr-only">(current)</span></a>
                         </li>
                         </li>
                     </th:block>
                     <th:block sec:authorize="isAuthenticated()">
                         <li class="nav-item active">
-                            <a class="nav-link text-white" th:href="@{/home}">Home <span
-                                    class="sr-only">(current)</span></a>
+                            <a class="nav-link text-white" th:href="@{/home}">
+                                <span th:text="#{navbar.home}"></span>
+                                <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
                                name="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Subjects
+                                <span th:text="#{navbar.subjects}"></span>
                             </a>
                             <div class="dropdown-menu md-background" aria-labelledby="navbarDropdown">
-                                <a class="nav-link text-white" th:href="@{/subject/add}">Add</a>
-                                <a class="nav-link text-white" th:href="@{/subject/all}">All</a>
+                                <a class="nav-link text-white" th:href="@{/subject/add}">
+                                    <span th:text="#{navbar.add}"></span>
+                                </a>
+                                <a class="nav-link text-white" th:href="@{/subject/all}">
+                                    <span th:text="#{navbar.all}"></span>
+                                </a>
                             </div>
                         </li>
 
@@ -45,30 +52,39 @@
                                 <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
                                    name="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Subject types
+                                    <span th:text="#{navbar.subject.types}"></span>
                                 </a>
                                 <div class="dropdown-menu md-background" aria-labelledby="navbarDropdown">
-                                    <a class="nav-link text-white" th:href="@{/subject-types/add}">Add</a>
-                                    <a class="nav-link text-white" th:href="@{/subject-types/all}">All</a>
+                                    <a class="nav-link text-white" th:href="@{/subject-types/add}">
+                                        <span th:text="#{navbar.add}"></span>
+                                    </a>
+                                    <a class="nav-link text-white" th:href="@{/subject-types/all}">
+                                        <span th:text="#{navbar.all}"></span>
+                                    </a>
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
                                    name="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Document types
+                                    <span th:text="#{navbar.document.types}"></span>
                                 </a>
                                 <div class="dropdown-menu md-background" aria-labelledby="navbarDropdown">
-                                    <a class="nav-link text-white" th:href="@{/document-types/add}">Add</a>
-                                    <a class="nav-link text-white" th:href="@{/document-types/all}">All</a>
+                                    <a class="nav-link text-white" th:href="@{/document-types/add}">
+                                        <span th:text="#{navbar.add}"></span>
+                                    </a>
+                                    <a class="nav-link text-white" th:href="@{/document-types/all}">
+                                        <span th:text="#{navbar.all}"></span>
+                                    </a>
                                 </div>
                             </li>
                         </th:block>
 
                         <th:block sec:authorize="hasAuthority('ADMIN')">
                             <li class="nav-item active">
-                                <a class="nav-link text-white" th:href="@{/users/show}">Users <span
-                                        class="sr-only">(current)</span></a>
+                                <a class="nav-link text-white" th:href="@{/users/show}">
+                                    <span th:text="#{navbar.users}"></span>
+                                    <span class="sr-only">(current)</span></a>
                             </li>
                         </th:block>
                     </th:block>
@@ -79,7 +95,8 @@
                         <li class="list-inline-item">
                             <form th:action="@{/logout}" th:method="post" class="form-inline my-2 my-lg-0">
                                 <span class="md-dark-text font-weight-bold" sec:authentication="name"></span>
-                                <button class="border-0 nav-link md-background">Logout</button>
+                                <button class="border-0 nav-link md-background" th:text="#{navbar.logout}">
+                                </button>
                             </form>
                         </li>
                     </th:block>
