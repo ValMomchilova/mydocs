@@ -73,7 +73,7 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
 
     private void checkUniqueness(SubjectType subjectType) throws UniqueFieldException {
         SubjectType same = this.subjectTypeRepository
-                .findSubjectTypeByTitle(subjectType.getTitle()).orElse(null);
+                .findSubjectTypeByTitle(subjectType.getTitle());
         if (same != null && !same.getId().equals(subjectType.getId())){
             throw new UniqueFieldException(this.getClass().getName(), "title");
         }

@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final static String USER_ROLES_ARE_NOT_SET =  "User roles are not set";
+    private final static String USER_ROLES_ARE_NOT_SET = "User roles are not set";
+    public static final String USERNAME_NOT_FOUND_MESSAGE = "Username not found.";
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -44,13 +45,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        return this.userRepository.findUserByUsername(userName).orElseThrow(
-                () -> new UsernameNotFoundException("Username not found."));
+        UserDetails userDetails = this.userRepository.findUserByUsername(userName);
+        if (userDetails == null) {
+            throw new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE);
+        }
+        return userDetails;
     }
 
     @Override
     public boolean register(UserServiceModel userServiceModel) throws UniqueFieldException, ModelValidationException, ConfigurationException {
-        if (!this.userValidationService.isValid(userServiceModel)){
+        if (!this.userValidationService.isValid(userServiceModel)) {
             throw new ModelValidationException("User", userServiceModel);
         }
 
@@ -61,8 +65,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         //
         Set<UserRole> userRoles = this.prepareUserRoles();
-        if (userRoles.isEmpty()){
-           throw new ConfigurationException(USER_ROLES_ARE_NOT_SET);
+        if (userRoles.isEmpty()) {
+            throw new ConfigurationException(USER_ROLES_ARE_NOT_SET);
         }
         user.setRoles(userRoles);
 
@@ -87,7 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserServiceModel findUserByID(String id) {
         User user = this.userRepository.findById(id).orElse(null);
-        if (user == null){
+        if (user == null) {
             return null;
         }
         return this.modelMapper.map(user, UserServiceModel.class);
@@ -95,32 +99,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean saveUser(UserServiceModel userServiceModel) {
-        if (!this.userValidationService.isValid(userServiceModel)){
+        if (!this.userValidationService.isValid(userServiceModel)) {
             return false;
         }
-       User user = this.modelMapper.map(userServiceModel, User.class);
-       return this.saveRepositoryUser(user);
+        User user = this.modelMapper.map(userServiceModel, User.class);
+        return this.saveRepositoryUser(user);
     }
 
     @Override
     public boolean saveRoles(UserServiceModel userServiceModel) {
         User user = this.userRepository.findById(userServiceModel.getId()).orElse(null);
-        if (user == null){
+        if (user == null || userServiceModel.getRoles() == null) {
             return false;
         }
         user.setRoles(userServiceModel.getRoles().stream().map(r -> this.modelMapper.map(r, UserRole.class))
-                    .collect(Collectors.toSet()));
+                .collect(Collectors.toSet()));
         return this.saveRepositoryUser(user);
     }
 
     @Override
     public boolean isAdmin(String id) {
         User user = this.userRepository.findById(id).orElse(null);
-        if (user == null){
+        if (user == null) {
             return false;
         }
         for (UserRole userRole : user.getRoles()) {
-            if(userRole.getName().equals("ADMIN")){
+            if (userRole.getName().equals("ADMIN")) {
                 return true;
             }
         }
@@ -129,18 +133,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserServiceModel findUserByUserName(String username) {
-        User user = this.userRepository.findUserByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("Username not found."));
+        User user = this.userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE);
+        }
+
         UserServiceModel userServiceModel = this.modelMapper.map(user, UserServiceModel.class);
         return userServiceModel;
     }
 
-    private Set<UserRole> prepareUserRoles(){
+    private Set<UserRole> prepareUserRoles() {
         Set<UserRole> userRoles = new HashSet<>();
         String roleName = "USER";
         UserRole role = this.userRoleService.getUserRoleByName(roleName);
         userRoles.add(role);
-        if (this.userRepository.findAll().isEmpty()){
+        if (this.userRepository.findAll().isEmpty()) {
             roleName = "ADMIN";
             role = this.userRoleService.getUserRoleByName(roleName);
             userRoles.add(role);
@@ -151,24 +158,24 @@ public class UserServiceImpl implements UserService {
         return userRoles;
     }
 
-    private boolean saveRepositoryUser(User user){
+    private boolean saveRepositoryUser(User user) {
         try {
             this.userRepository.save(user);
             return true;
-        }   catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
     private void checkUniqueness(User user) throws UniqueFieldException {
-        User userWithTheSameUsername = this.userRepository.findUserByUsername(user.getUsername()).orElse(null);
-        if (userWithTheSameUsername != null && !userWithTheSameUsername.getId().equals(user.getId())){
+        User userWithTheSameUsername = this.userRepository.findUserByUsername(user.getUsername());
+        if (userWithTheSameUsername != null && !userWithTheSameUsername.getId().equals(user.getId())) {
             throw new UniqueFieldException(this.getClass().getName(), "username");
         }
 
-        User userWithTheSameEmail = this.userRepository.findUserByEmail(user.getEmail()).orElse(null);
-        if (userWithTheSameEmail != null && !userWithTheSameEmail.getId().equals(user.getId())){
+        User userWithTheSameEmail = this.userRepository.findUserByEmail(user.getEmail());
+        if (userWithTheSameEmail != null && !userWithTheSameEmail.getId().equals(user.getId())) {
             throw new UniqueFieldException(this.getClass().getName(), "email");
         }
     }

@@ -71,7 +71,7 @@ public class SubjectServiceImpl implements SubjectService {
         User user = this.modelMapper.map(userServiceModel, User.class);
         Subject subject = this.subjectRepository.findSubjectByIdAndAndUser(id, user);
         if (subject == null){
-            return null;
+            throw new IllegalArgumentException(SUBJECT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE);
         }
         return this.modelMapper.map(subject, SubjectServiceModel.class);
     }
@@ -111,9 +111,13 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     private void checkUniqueness(Subject subject) throws UniqueFieldException {
-        Subject same = this.subjectRepository.findSubjectByName(subject.getName());
-        if (same != null && !same.getId().equals(subject.getId())){
-            throw new UniqueFieldException(this.getClass().getName(), "name");
+        List<Subject> sames = this.subjectRepository.findAllByName(subject.getName());
+        for (Subject same : sames) {
+            if (same != null
+                    && !same.getId().equals(subject.getId())
+                    && same.getUser().getUsername().equals(subject.getUser().getUsername())){
+                throw new UniqueFieldException(this.getClass().getName(), "name");
+            }
         }
     }
 }

@@ -15,13 +15,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class DocumentTypeServiceImpl implements DocumentTypeService {
-    private final DocumentTypeRepository subjectTypeRepository;
+    private final DocumentTypeRepository documentTypeRepository;
     private final ModelMapper modelMapper;
     private final DocumentTypeValidationService documentTypeValidationService;
 
     @Autowired
-    public DocumentTypeServiceImpl(DocumentTypeRepository subjectTypeRepository, ModelMapper modelMapper, DocumentTypeValidationService documentTypeValidationService) {
-        this.subjectTypeRepository = subjectTypeRepository;
+    public DocumentTypeServiceImpl(DocumentTypeRepository documentTypeRepository,
+                                   ModelMapper modelMapper,
+                                   DocumentTypeValidationService documentTypeValidationService) {
+        this.documentTypeRepository = documentTypeRepository;
         this.modelMapper = modelMapper;
         this.documentTypeValidationService = documentTypeValidationService;
     }
@@ -42,12 +44,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public void deleteDocumentType(String id) {
-       this.subjectTypeRepository.deleteById(id);
+       this.documentTypeRepository.deleteById(id);
     }
 
     @Override
     public List<DocumentTypeServiceModel> findAllDocumentTypes() {
-        return this.subjectTypeRepository.findAll()
+        return this.documentTypeRepository.findAll()
                 .stream()
                 .map(o -> this.modelMapper.map(o, DocumentTypeServiceModel.class))
                 .collect(Collectors.toList());
@@ -55,7 +57,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public DocumentTypeServiceModel findDocumentTypesById(String id) {
-        DocumentType subjectType = this.subjectTypeRepository.findById(id).orElse(null);
+        DocumentType subjectType = this.documentTypeRepository.findById(id).orElse(null);
         if (subjectType == null){
             return null;
         }
@@ -67,12 +69,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
             throw new ModelValidationException(documentType.getClass().getName(), documentType);
         }
         this.checkUniqueness(documentType);
-        return this.subjectTypeRepository.save(documentType);
+        return this.documentTypeRepository.save(documentType);
     }
 
     private void checkUniqueness(DocumentType documentType) throws UniqueFieldException {
-        DocumentType same = this.subjectTypeRepository
-                .findDocumentTypeByTitle(documentType.getTitle()).orElse(null);
+        DocumentType same = this.documentTypeRepository
+                .findDocumentTypeByTitle(documentType.getTitle());
         if (same != null && !same.getId().equals(documentType.getId())){
             throw new UniqueFieldException(this.getClass().getName(), "title");
         }

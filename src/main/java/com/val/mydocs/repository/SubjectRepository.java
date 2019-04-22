@@ -13,5 +13,7 @@ public interface SubjectRepository extends JpaRepository<Subject, String> {
 
     Subject findSubjectByIdAndAndUser(String id, User user);
 
+    List<Subject> findAllByName(String name);
+
     Subject findSubjectByName(String name);
 }

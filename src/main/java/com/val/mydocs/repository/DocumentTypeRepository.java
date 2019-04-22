@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface DocumentTypeRepository extends JpaRepository<DocumentType, String> {
-    public Optional<DocumentType> findDocumentTypeByTitle(String title);
+    public DocumentType findDocumentTypeByTitle(String title);
 }

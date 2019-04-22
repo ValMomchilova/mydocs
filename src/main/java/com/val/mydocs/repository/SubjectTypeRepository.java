@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface SubjectTypeRepository extends JpaRepository<SubjectType, String> {
-    public Optional<SubjectType> findSubjectTypeByTitle(String title);
+    public SubjectType findSubjectTypeByTitle(String title);
 }

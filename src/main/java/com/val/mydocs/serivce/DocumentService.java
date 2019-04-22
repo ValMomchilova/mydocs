@@ -21,5 +21,5 @@ public interface DocumentService {
 
     DocumentServiceModel renewDocument(DocumentServiceModel documentServiceModel, String userName) throws ModelValidationException;
 
-    void AutoRenewDocuments() throws ModelValidationException;
+    void autoRenewDocuments() throws ModelValidationException;
 }

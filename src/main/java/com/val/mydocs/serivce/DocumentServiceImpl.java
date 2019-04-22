@@ -21,7 +21,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
-    public static final String DOCUMENT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE = "Document is not found or not belongs to the user";
+    public static final String DOCUMENT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE
+            = "Document is not found or not belongs to the user";
+    public static final String SUBJECT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE
+            = "Subject is not found or not belongs to the user";
     private final DocumentRepository documentRepository;
     private final UserService userService;
     private final SubjectService subjectService;
@@ -30,7 +33,12 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentValidationService documentValidationService;
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, UserService userService, SubjectService subjectService, ModelMapper modelMapper, DateTimeService dateTimeService, DocumentValidationService documentValidationService) {
+    public DocumentServiceImpl(DocumentRepository documentRepository,
+                               UserService userService,
+                               SubjectService subjectService,
+                               ModelMapper modelMapper,
+                               DateTimeService dateTimeService,
+                               DocumentValidationService documentValidationService) {
         this.documentRepository = documentRepository;
         this.userService = userService;
         this.subjectService = subjectService;
@@ -63,7 +71,7 @@ public class DocumentServiceImpl implements DocumentService {
         User user = this.findUser(username);
         Document document = this.documentRepository.findDocumentByIdAndAndUser(id, user);
         if (document == null) {
-            return null;
+            throw new IllegalArgumentException(DOCUMENT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE);
         }
         return this.modelMapper.map(document, DocumentServiceModel.class);
     }
@@ -97,7 +105,7 @@ public class DocumentServiceImpl implements DocumentService {
         User user = this.findUser(username);
         SubjectServiceModel subjectServiceModel = this.subjectService.findSubjectsById(subjectId, username);
         if (subjectServiceModel == null) {
-            throw new IllegalArgumentException(DOCUMENT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE);
+            throw new IllegalArgumentException(SUBJECT_IS_NOT_FOUND_OR_NOT_BELONGS_TO_THE_USER_MESSAGE);
         }
         Subject subject = this.modelMapper.map(subjectServiceModel, Subject.class);
         List<Document> userDocuments = this.documentRepository
@@ -136,7 +144,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     // at 12:00 AM every day
     @Scheduled(cron = "0 0 0 * * *")
-    public void AutoRenewDocuments() throws ModelValidationException {
+    public void autoRenewDocuments() throws ModelValidationException {
         List<Document> documentsToRenew = this.documentRepository
                 .findDocumentByRenewDateAndAutoRenewAndExpiredDateIsBefore(null,
                         true

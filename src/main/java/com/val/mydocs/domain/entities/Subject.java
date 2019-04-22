@@ -26,7 +26,7 @@ public class Subject extends BaseEntity {
         this.subjectType = subjectType;
     }
 
-    @Column(name = "name", nullable = false, unique = true, length = 30)
+    @Column(name = "name", nullable = false, length = 30)
     public String getName() {
         return name;
     }
